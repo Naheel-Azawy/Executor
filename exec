@@ -1,0 +1,143 @@
+#!/bin/python
+
+# exec
+#
+# Copyright (C) 2017 naheel_azawy
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import os
+import os.path
+import sys
+import shlex
+
+TEST = False
+
+def replace_last(src, rep, rwith):
+	index = src.rfind(rep)
+	return src[:index] + src[index:].replace(rep, rwith)
+
+argstr = ""
+for a in sys.argv: argstr += a + " "
+args = shlex.split(argstr)
+
+if (TEST):
+	i = 0
+	for a in args:
+		print(str(i)+"- " + a)
+		i+=1
+	print("--------------")
+
+COMPARGS  = "-compargs"
+RUNARGS   = "-runargs"
+MOREFILES = "-morefiles"
+
+cmArgs  = ""
+cmFiles = ""
+rnArgs  = ""
+s       = ""
+
+i = 1
+while (i < len(args)):
+	if (args[i].startswith(COMPARGS)):
+		cmArgs += " " + args[i+1]
+		i+=1
+	elif (args[i].startswith(MOREFILES)):
+		cmFiles += " " + args[i+1]
+		i+=1
+	elif (s == "" and os.path.exists(args[i])):
+		s = os.path.abspath(args[i])
+	else:
+		rnArgs += " " + args[i]
+	i+=1
+
+n  = s[s.rfind('/')+1:]
+p  = s[:s.rfind('/')+1]
+e  = s[s.rfind('.'):]
+bp = p + ".execs/"
+t  = bp + "." + replace_last(n, e, e+".tmp")
+inputFiles = s + cmFiles.replace("$p", p)
+b  = ""
+cm = ""
+rn = ""
+
+if (e == ".java"):
+	c = replace_last(n, e, "")
+	b  = bp + c + ".class"
+	cm = "javac " + inputFiles + " && " + "mv " + p + c + "*.class " + bp
+	rn = "cd " + bp + " && java " + c
+elif (e == ".vala"):
+	b  = bp + replace_last(n, e, e+".bin")
+	cm = "valac " + inputFiles + " -o " + b
+	rn = b
+elif (e == ".c"):
+	b  = bp + replace_last(n, e, e+".bin")
+	cm = "gcc " + inputFiles + " -o " + b
+	rn = b
+elif (e == ".cs"):
+	b  = bp + replace_last(n, e, ".exe")
+	cm = "mcs " + inputFiles + " -out:" + b
+	rn = "mono " + b
+elif (e in (".cpp", ".C", ".cc", ".CPP", ".c++", ".cp", ".cxx")):
+	b  = bp + replace_last(n, e, e+".bin")
+	cm = "g++ " + inputFiles + " -o " + b
+	rn = b
+else:
+	print("Invalid input file: '" + e + "'")
+	if (not TEST): quit()
+
+cm += cmArgs
+rn += rnArgs
+
+if (TEST):
+	print( \
+		"s  = " + s  +"\n"\
+		"n  = " + n  +"\n"\
+		"p  = " + p  +"\n"\
+		"e  = " + e  +"\n"\
+		"bp = " + bp +"\n"\
+		"t  = " + t  +"\n"\
+		"b  = " + b  +"\n"\
+		"cm = " + cm +"\n"\
+		"rn = " + rn +"\n"\
+		"cmFiles = " + cmFiles +"\n"\
+		"--------------\n"\
+	)
+	quit()
+
+def run():
+	if (os.path.exists(b) and os.path.getmtime(b) >= os.path.getmtime(s)):
+		os.system(rn)
+		return True
+	return False
+
+def compile():
+	os.system("mkdir -p " + bp)
+	with open(s, 'r') as fin:
+		data = fin.read().splitlines(True)
+	genTemp = data[0].startswith("#!")
+	if (genTemp):
+		os.rename(s, t)
+		with open(s, 'w') as fout:
+			fout.write("\n")
+			fout.writelines(data[1:])
+	os.system(cm)
+	if (genTemp):
+		os.rename(t, s)
+
+if (not run()):
+	compile();
+	run();
+
+
