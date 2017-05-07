@@ -1,3 +1,11 @@
 #!/bin/bash
 cd test
-./HelloC.c && ./HelloCpp.cpp && ./HelloCS.cs && ./HelloJava.java && ./HelloVala.vala && ./HelloValaGtk.vala
+./HelloC.c
+./HelloCpp.cpp
+./HelloCS.cs
+./HelloGo.go
+./HelloRust.rs
+./HelloJava.java
+./HelloGenie.gs
+./HelloVala.vala
+./HelloValaGtk.vala

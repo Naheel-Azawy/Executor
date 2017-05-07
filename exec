@@ -77,7 +77,7 @@ if (e == ".java"):
 	b  = bp + c + ".class"
 	cm = "javac " + inputFiles + " && " + "mv " + p + c + "*.class " + bp
 	rn = "cd " + bp + " && java " + c
-elif (e == ".vala"):
+elif (e in (".vala", ".gs")):
 	b  = bp + replace_last(n, e, e+".bin")
 	cm = "valac " + inputFiles + " -o " + b
 	rn = b
@@ -92,6 +92,14 @@ elif (e == ".cs"):
 elif (e in (".cpp", ".C", ".cc", ".CPP", ".c++", ".cp", ".cxx")):
 	b  = bp + replace_last(n, e, e+".bin")
 	cm = "g++ " + inputFiles + " -o " + b
+	rn = b
+elif (e == ".rs"):
+	b  = bp + replace_last(n, e, e+".bin")
+	cm = "rustc " + inputFiles + " -o " + b
+	rn = b
+elif (e == ".go"):
+	b  = bp + replace_last(n, e, e+".bin")
+	cm = "gccgo " + inputFiles + " -o " + b
 	rn = b
 else:
 	print("Invalid input file: '" + e + "'")
