@@ -21,6 +21,7 @@ import os
 import os.path
 import sys
 import shlex
+import platform
 
 TEST = False
 
@@ -78,28 +79,45 @@ if (e == ".java"):
 	cm = "javac " + inputFiles + " && " + "mv " + p + c + "*.class " + bp
 	rn = "cd " + bp + " && java " + c
 elif (e in (".vala", ".gs")):
-	b  = bp + replace_last(n, e, e+".bin")
+	b  = bp + n + ".bin"
 	cm = "valac " + inputFiles + " -o " + b
 	rn = b
 elif (e == ".c"):
-	b  = bp + replace_last(n, e, e+".bin")
+	b  = bp + n + ".bin"
 	cm = "gcc " + inputFiles + " -o " + b
+	rn = b
+elif (e in (".cpp", ".C", ".cc", ".CPP", ".c++", ".cp", ".cxx")):
+	b  = bp + n + ".bin"
+	cm = "g++ " + inputFiles + " -o " + b
 	rn = b
 elif (e == ".cs"):
 	b  = bp + replace_last(n, e, ".exe")
 	cm = "mcs " + inputFiles + " -out:" + b
 	rn = "mono " + b
-elif (e in (".cpp", ".C", ".cc", ".CPP", ".c++", ".cp", ".cxx")):
-	b  = bp + replace_last(n, e, e+".bin")
-	cm = "g++ " + inputFiles + " -o " + b
-	rn = b
+elif (e == ".vb"):
+	b  = bp + replace_last(n, e, ".exe")
+	cm = "vbnc " + inputFiles + " 1>/dev/null /out:" + b
+	rn = "mono " + b
 elif (e == ".rs"):
-	b  = bp + replace_last(n, e, e+".bin")
+	b  = bp + n + ".bin"
 	cm = "rustc " + inputFiles + " -o " + b
 	rn = b
 elif (e == ".go"):
-	b  = bp + replace_last(n, e, e+".bin")
+	b  = bp + n + ".bin"
 	cm = "gccgo " + inputFiles + " -o " + b
+	rn = b
+elif (e == ".ts"):
+	b  = bp + replace_last(n, e, ".js")
+	cm = "tsc " + inputFiles + " && mv " + replace_last(s, e, ".js") + " " + bp
+	rn = "node " + b
+elif (e == ".asm"):
+	b  = bp + n + ".bin"
+	o  = bp + n + ".o"
+	cm = "nasm " + inputFiles + " -o " + o
+	if (platform.architecture()[0]=="64bit"): cm += " -f elf64"
+	else: cm += " -f elf"
+	cm += " && ld -s -o " + b + " " + o
+	cm += " && rm " + o
 	rn = b
 else:
 	print("Invalid input file: '" + e + "'")
@@ -145,7 +163,7 @@ def compile():
 		os.rename(t, s)
 
 if (not run()):
-	compile();
-	run();
+	compile()
+	run()
 
 
