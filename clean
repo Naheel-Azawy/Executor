@@ -1,0 +1,3 @@
+#!/bin/sh
+rm -r -f ./test/.execs
+rm -r -f ./test/G\ U\ I/.execs

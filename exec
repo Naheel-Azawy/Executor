@@ -30,10 +30,14 @@ def replace_last(src, rep, rwith):
 	return src[:index] + src[index:].replace(rep, rwith)
 
 argstr = ""
-for a in sys.argv: argstr += a + " "
+argc = len(sys.argv)
+for a in range(0, argc - 1):
+	argstr += sys.argv[a] + " "
+argstr += "\'" + sys.argv[argc-1] + "\'"
 args = shlex.split(argstr)
 
 if (TEST):
+	print(argstr)
 	i = 0
 	for a in args:
 		print(str(i)+"- " + a)
@@ -68,51 +72,51 @@ p  = s[:s.rfind('/')+1]
 e  = s[s.rfind('.'):]
 bp = p + ".execs/"
 t  = bp + "." + replace_last(n, e, e+".tmp")
-inputFiles = s + cmFiles.replace("$p", p)
+inputFiles = "\'" + s + "\'" + cmFiles.replace("$p", p)
 b  = ""
 cm = ""
 rn = ""
 
 if (e == ".java"):
 	c = replace_last(n, e, "")
-	b  = bp + c + ".class"
-	cm = "javac " + inputFiles + " && " + "mv " + p + c + "*.class " + bp
-	rn = "cd " + bp + " && java " + c
+	b  = "\'" + bp + c + ".class" + "\'"
+	cm = "javac " + inputFiles + " && " + "mv " + (p + c + "*.class").replace(" ", "\ ") + " \'" + bp + "\'"
+	rn = "cd \"" + bp + "\" && java " + c
 elif (e in (".vala", ".gs")):
-	b  = bp + n + ".bin"
+	b  = "\'" + bp + n + ".bin" + "\'"
 	cm = "valac " + inputFiles + " -o " + b
 	rn = b
 elif (e == ".c"):
-	b  = bp + n + ".bin"
+	b  = "\'" + bp + n + ".bin" + "\'"
 	cm = "gcc " + inputFiles + " -o " + b
 	rn = b
 elif (e in (".cpp", ".C", ".cc", ".CPP", ".c++", ".cp", ".cxx")):
-	b  = bp + n + ".bin"
+	b  = "\'" + bp + n + ".bin" + "\'"
 	cm = "g++ " + inputFiles + " -o " + b
 	rn = b
 elif (e == ".cs"):
-	b  = bp + replace_last(n, e, ".exe")
+	b  = "\'" + bp + replace_last(n, e, ".exe") + "\'"
 	cm = "mcs " + inputFiles + " -out:" + b
 	rn = "mono " + b
 elif (e == ".vb"):
-	b  = bp + replace_last(n, e, ".exe")
+	b  = "\'" + bp + replace_last(n, e, ".exe") + "\'"
 	cm = "vbnc " + inputFiles + " 1>/dev/null /out:" + b
 	rn = "mono " + b
 elif (e == ".rs"):
-	b  = bp + n + ".bin"
+	b  = "\'" + bp + n + ".bin" + "\'"
 	cm = "rustc " + inputFiles + " -o " + b
 	rn = b
 elif (e == ".go"):
-	b  = bp + n + ".bin"
+	b  = "\'" + bp + n + ".bin" + "\'"
 	cm = "gccgo " + inputFiles + " -o " + b
 	rn = b
 elif (e == ".ts"):
-	b  = bp + replace_last(n, e, ".js")
+	b  = "\'" + bp + replace_last(n, e, ".js") + "\'"
 	cm = "tsc " + inputFiles + " && mv " + replace_last(s, e, ".js") + " " + bp
 	rn = "node " + b
 elif (e == ".asm"):
-	b  = bp + n + ".bin"
-	o  = bp + n + ".o"
+	b  = "\'" + bp + n + ".bin" + "\'"
+	o  = "\'" + bp + n + ".o" + "\'"
 	cm = "nasm " + inputFiles + " -o " + o
 	if (platform.architecture()[0]=="64bit"): cm += " -f elf64"
 	else: cm += " -f elf"
@@ -120,7 +124,7 @@ elif (e == ".asm"):
 	cm += " && rm " + o
 	rn = b
 else:
-	print("Invalid input file: '" + e + "'")
+	print("Invalid input file: '" + s + "'")
 	if (not TEST): quit()
 
 cm += cmArgs
@@ -140,16 +144,17 @@ if (TEST):
 		"cmFiles = " + cmFiles +"\n"\
 		"--------------\n"\
 	)
-	quit()
+	#quit()
 
 def run():
-	if (os.path.exists(b) and os.path.getmtime(b) >= os.path.getmtime(s)):
+	b2 = b[1:len(b)-1]
+	if (os.path.exists(b2) and os.path.getmtime(b2) >= os.path.getmtime(s)):
 		os.system(rn)
 		return True
 	return False
 
 def compile():
-	os.system("mkdir -p " + bp)
+	os.system("mkdir -p \'" + bp + "\'")
 	with open(s, 'r') as fin:
 		data = fin.read().splitlines(True)
 	genTemp = data[0].startswith("#!")
