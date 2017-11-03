@@ -4,68 +4,19 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-COMPARGS	../exec	/^COMPARGS  = "-compargs"$/;"	kind:variable	line:47
-MOREFILES	../exec	/^MOREFILES = "-morefiles"$/;"	kind:variable	line:49
-RUNARGS	../exec	/^RUNARGS   = "-runargs"$/;"	kind:variable	line:48
+COMPARGS	../exec	/^COMPARGS = "-compargs"$/;"	kind:variable	line:28
+COMPARGS_S	../exec	/^COMPARGS_S = "-c"$/;"	kind:variable	line:31
+MOREFILES	../exec	/^MOREFILES = "-morefiles"$/;"	kind:variable	line:29
+MOREFILES_S	../exec	/^MOREFILES_S = "-m"$/;"	kind:variable	line:32
 TEST	../exec	/^TEST = False$/;"	kind:variable	line:26
-argc	../exec	/^argc = len(sys.argv)$/;"	kind:variable	line:33
-args	../exec	/^args = shlex.split(argstr)$/;"	kind:variable	line:37
-argstr	../exec	/^argstr = ""$/;"	kind:variable	line:32
-b	../exec	/^	b  = "\\'" + bp + c + ".class" + "\\'"$/;"	kind:variable	line:82
-b	../exec	/^	b  = "\\'" + bp + n + ".bin" + "\\'"$/;"	kind:variable	line:106
-b	../exec	/^	b  = "\\'" + bp + n + ".bin" + "\\'"$/;"	kind:variable	line:110
-b	../exec	/^	b  = "\\'" + bp + n + ".bin" + "\\'"$/;"	kind:variable	line:118
-b	../exec	/^	b  = "\\'" + bp + n + ".bin" + "\\'"$/;"	kind:variable	line:86
-b	../exec	/^	b  = "\\'" + bp + n + ".bin" + "\\'"$/;"	kind:variable	line:90
-b	../exec	/^	b  = "\\'" + bp + n + ".bin" + "\\'"$/;"	kind:variable	line:94
-b	../exec	/^	b  = "\\'" + bp + replace_last(n, e, ".exe") + "\\'"$/;"	kind:variable	line:102
-b	../exec	/^	b  = "\\'" + bp + replace_last(n, e, ".exe") + "\\'"$/;"	kind:variable	line:98
-b	../exec	/^	b  = "\\'" + bp + replace_last(n, e, ".js") + "\\'"$/;"	kind:variable	line:114
-b	../exec	/^b  = ""$/;"	kind:variable	line:76
-bp	../exec	/^bp = p + ".execs\/"$/;"	kind:variable	line:73
-c	../exec	/^	c = replace_last(n, e, "")$/;"	kind:variable	line:81
-cm	../exec	/^	cm = "g++ " + inputFiles + " -o " + b$/;"	kind:variable	line:95
-cm	../exec	/^	cm = "gcc " + inputFiles + " -o " + b$/;"	kind:variable	line:91
-cm	../exec	/^	cm = "gccgo " + inputFiles + " -o " + b$/;"	kind:variable	line:111
-cm	../exec	/^	cm = "javac " + inputFiles + " && " + "mv " + (p + c + "*.class").replace(" ", "\\ ") + " \\'" + bp + "\\'"$/;"	kind:variable	line:83
-cm	../exec	/^	cm = "mcs " + inputFiles + " -out:" + b$/;"	kind:variable	line:99
-cm	../exec	/^	cm = "nasm " + inputFiles + " -o " + o + " -f elf"$/;"	kind:variable	line:120
-cm	../exec	/^	cm = "rustc " + inputFiles + " -o " + b$/;"	kind:variable	line:107
-cm	../exec	/^	cm = "tsc " + inputFiles + " && mv " + replace_last(s, e, ".js") + " " + bp$/;"	kind:variable	line:115
-cm	../exec	/^	cm = "valac " + inputFiles + " -o " + b$/;"	kind:variable	line:87
-cm	../exec	/^	cm = "vbnc " + inputFiles + " 1>\/dev\/null \/out:" + b$/;"	kind:variable	line:103
-cm	../exec	/^cm = ""$/;"	kind:variable	line:77
-cmArgs	../exec	/^cmArgs  = ""$/;"	kind:variable	line:51
-cmFiles	../exec	/^cmFiles = ""$/;"	kind:variable	line:52
-compile	../exec	/^def compile():$/;"	kind:function	line:155
-e	../exec	/^e  = s[s.rfind('.'):]$/;"	kind:variable	line:72
+comp	../exec	/^    def comp():$/;"	kind:function	line:171
 exec	../exec	1;"	kind:file	line:1
-i	../exec	/^	i = 0$/;"	kind:variable	line:41
-i	../exec	/^i = 1$/;"	kind:variable	line:56
-inputFiles	../exec	/^inputFiles = "\\'" + s + "\\'" + cmFiles.replace("$p", p)$/;"	kind:variable	line:75
-n	../exec	/^n  = s[s.rfind('\/')+1:]$/;"	kind:variable	line:70
-o	../exec	/^	o  = "\\'" + bp + n + ".o" + "\\'"$/;"	kind:variable	line:119
+main	../exec	/^def main():$/;"	kind:function	line:43
 os	../exec	/^import os$/;"	kind:namespace	line:20
 os	../exec	/^import os.path$/;"	kind:namespace	line:21
-p	../exec	/^p  = s[:s.rfind('\/')+1]$/;"	kind:variable	line:71
 path	../exec	/^import os.path$/;"	kind:namespace	line:21
 platform	../exec	/^import platform$/;"	kind:namespace	line:24
-replace_last	../exec	/^def replace_last(src, rep, rwith):$/;"	kind:function	line:28
-rn	../exec	/^	rn = "cd \\"" + bp + "\\" && java " + c$/;"	kind:variable	line:84
-rn	../exec	/^	rn = "mono " + b$/;"	kind:variable	line:100
-rn	../exec	/^	rn = "mono " + b$/;"	kind:variable	line:104
-rn	../exec	/^	rn = "node " + b$/;"	kind:variable	line:116
-rn	../exec	/^	rn = b$/;"	kind:variable	line:108
-rn	../exec	/^	rn = b$/;"	kind:variable	line:112
-rn	../exec	/^	rn = b$/;"	kind:variable	line:124
-rn	../exec	/^	rn = b$/;"	kind:variable	line:88
-rn	../exec	/^	rn = b$/;"	kind:variable	line:92
-rn	../exec	/^	rn = b$/;"	kind:variable	line:96
-rn	../exec	/^rn = ""$/;"	kind:variable	line:78
-rnArgs	../exec	/^rnArgs  = ""$/;"	kind:variable	line:53
-run	../exec	/^def run():$/;"	kind:function	line:148
-s	../exec	/^		s = os.path.abspath(args[i])$/;"	kind:variable	line:65
-s	../exec	/^s       = ""$/;"	kind:variable	line:54
+replace_last	../exec	/^def replace_last(src, rep, rwith):$/;"	kind:function	line:35
+run	../exec	/^    def run():$/;"	kind:function	line:161
 shlex	../exec	/^import shlex$/;"	kind:namespace	line:23
 sys	../exec	/^import sys$/;"	kind:namespace	line:22
-t	../exec	/^t  = bp + "." + replace_last(n, e, e+".tmp")$/;"	kind:variable	line:74

@@ -25,11 +25,15 @@ import platform
 
 TEST = False
 
-COMPARGS = "-compargs"
-MOREFILES = "-morefiles"
+COMPARGS = "--compargs"
+MOREFILES = "--morefiles"
+LINES_FROM = "--from"
+LINES_TO = "--to"
 
 COMPARGS_S = "-c"
 MOREFILES_S = "-m"
+LINES_FROM_S = "-f"
+LINES_TO_S = "-t"
 
 
 def replace_last(src, rep, rwith):
@@ -41,7 +45,15 @@ def replace_last(src, rep, rwith):
 
 
 def main():
-    """ Main """
+    fr = 0
+    to = 0
+    frb = False
+    tob = False
+    cmArgs = ""
+    cmFiles = ""
+    rnArgs = ""
+    s = ""
+
     argstr = ""
     argc = len(sys.argv)
     for a in range(0, argc - 1):
@@ -57,11 +69,6 @@ def main():
             i += 1
         print "--------------"
 
-    cmArgs = ""
-    cmFiles = ""
-    rnArgs = ""
-    s = ""
-
     i = 1
     while i < len(args):
         if args[i].startswith(COMPARGS) or args[i].startswith(COMPARGS_S):
@@ -69,6 +76,14 @@ def main():
             i += 1
         elif args[i].startswith(MOREFILES) or args[i].startswith(MOREFILES_S):
             cmFiles += " " + args[i + 1]
+            i += 1
+        elif args[i].startswith(LINES_FROM) or args[i].startswith(LINES_FROM_S):
+            fr = int(args[i + 1]) - 1
+            frb = True
+            i += 1
+        elif args[i].startswith(LINES_TO) or args[i].startswith(LINES_TO_S):
+            to = int(args[i + 1])
+            tob = True
             i += 1
         elif s == "" and os.path.exists(args[i]):
             s = os.path.abspath(args[i])
@@ -92,6 +107,10 @@ def main():
         cm = "javac " + inputFiles + " && " + "mv " + \
             (p + c + "*.class").replace(" ", "\\ ") + " '" + bp + "'"
         rn = "cd \"" + bp + "\" && java " + c
+    elif e == ".kt":
+        b = "\'" + bp + replace_last(n, e, ".jar") + "\'"
+        cm = "kotlinc " + inputFiles + " -include-runtime -d " + b
+        rn = "cd \"" + bp + "\" && java -jar " + b
     elif e in (".vala", ".gs"):
         b = "\'" + bp + n + ".bin" + "\'"
         cm = "valac " + inputFiles + " -o " + b
@@ -144,6 +163,8 @@ def main():
 
     if TEST:
         print(
+            "fr = " + str(fr) + "\n"
+            "to = " + str(to) + "\n"
             "s  = " + s + "\n"
             "n  = " + n + "\n"
             "p  = " + p + "\n"
@@ -168,26 +189,34 @@ def main():
             return True
         return False
 
-    def comp():
+    if frb or tob:
+        os.system("rm -f " + b)
+
+    if not run():
         """
         Compile the source. If it starts with '#!', remove it and generate a temp file
         """
         os.system("mkdir -p \'" + bp + "\'")
         with open(s, 'r') as fin:
             data = fin.read().splitlines(True)
-        genTemp = data[0].startswith("#!")
+        sh = data[0].startswith("#!")
+        genTemp = sh or frb or tob
         if genTemp:
             os.rename(s, t)
+            if not tob:
+                to = len(data)
             with open(s, 'w') as fout:
-                fout.write("\n")
-                fout.writelines(data[1:])
+                if sh:
+                    data[0] = ""
+                    fout.write("\n")
+                fout.writelines(data[fr:to])
         os.system(cm)
         if genTemp:
             os.rename(t, s)
-
-    if not run():
-        comp()
         run()
+
+    if frb or tob:
+        os.system("rm -f " + b)
 
 
 if __name__ == "__main__":

@@ -9,6 +9,7 @@ Run everything like a script!
 - Go	(gccgo)
 - Rust	(rustc)
 - Java	(javac)
+- Kotlin    (kotlinc and java)
 - Vala	(valac)
 - Genie	(valac)
 - TypeScript	(tsc and node)
@@ -31,6 +32,10 @@ void main() { print ("Hello!\n"); }
 ```sh
 $ chmod +x test.vala
 $ ./test.vala
+```
+It's also possible to run a range of lines
+```sh
+$ ./test.ts --from 3 --to 5
 ```
 
 ### Clean up

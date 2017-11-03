@@ -8,9 +8,11 @@ chmod +x HelloVBNet.vb
 chmod +x HelloGo.go
 chmod +x HelloRust.rs
 chmod +x HelloJava.java
+chmod +x HelloKotlin.kt
 chmod +x HelloTS.ts
 chmod +x HelloGenie.gs
 chmod +x HelloVala.vala
+chmod +x HelloTS2.ts
 chmod +x ./G\ U\ I/HelloValaGtk.vala
 
 ./HelloIntelAsm.asm
@@ -21,7 +23,9 @@ chmod +x ./G\ U\ I/HelloValaGtk.vala
 ./HelloGo.go
 ./HelloRust.rs
 ./HelloJava.java
+./HelloKotlin.kt
 ./HelloTS.ts
 ./HelloGenie.gs
 ./HelloVala.vala
+./HelloTS2.ts -f 3 -t 5
 ./G\ U\ I/HelloValaGtk.vala
