@@ -9,7 +9,11 @@ chmod +x HelloGo.go
 chmod +x HelloRust.rs
 chmod +x HelloJava.java
 chmod +x HelloKotlin.kt
+chmod +x HelloKotlinScript.kts
 chmod +x HelloTS.ts
+chmod +x HelloJS.js
+chmod +x HelloPy.py
+chmod +x HelloOctave.m
 chmod +x HelloGenie.gs
 chmod +x HelloVala.vala
 chmod +x HelloTS2.ts
@@ -24,8 +28,12 @@ chmod +x ./G\ U\ I/HelloValaGtk.vala
 ./HelloRust.rs
 ./HelloJava.java
 ./HelloKotlin.kt
+./HelloKotlinScript.kts
 ./HelloTS.ts
+./HelloJS.js
+./HelloPy.py
+./HelloOctave.m 2> /dev/null
 ./HelloGenie.gs
 ./HelloVala.vala
 ./HelloTS2.ts -f 3 -t 5
-./G\ U\ I/HelloValaGtk.vala
+./G\ U\ I/HelloValaGtk.vala 2> /dev/null

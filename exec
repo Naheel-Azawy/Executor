@@ -153,12 +153,29 @@ def main():
         cm += " && ld -s -o " + b + " " + o
         cm += " && rm " + o
         rn = b
+    elif e == ".py":
+        b = "\'" + s + "\'"
+        cm = ""
+        rn = "python " + b
+    elif e == ".js":
+        b = "\'" + s + "\'"
+        cm = ""
+        rn = "node " + b
+    elif e == ".m":
+        b = "\'" + s + "\'"
+        cm = ""
+        rn = "octave --persist --no-gui --quiet " + b
+    elif e == ".kts":
+        b = "\'" + s + "\'"
+        cm = ""
+        rn = "kotlinc -script " + b
     else:
         print "Invalid input file: '" + s + "'"
         if not TEST:
             quit()
 
-    cm += cmArgs
+    if cm != "":
+        cm += cmArgs
     rn += rnArgs
 
     if TEST:

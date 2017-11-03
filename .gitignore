@@ -1,2 +1,4 @@
 test/.execs/
 test/G U I/.execs/
+.vscode/tags
+test/octave-workspace

@@ -10,9 +10,13 @@ Run everything like a script!
 - Rust	(rustc)
 - Java	(javac)
 - Kotlin    (kotlinc and java)
+- Kotlin Script (kotlinc -script)
 - Vala	(valac)
 - Genie	(valac)
 - TypeScript	(tsc and node)
+- JavaScript    (node)
+- Python    (python)
+- GNU Octave    (octave)
 - Intel Assembly (nasm)
 
 ### Installation

@@ -4,19 +4,22 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-COMPARGS	../exec	/^COMPARGS = "-compargs"$/;"	kind:variable	line:28
-COMPARGS_S	../exec	/^COMPARGS_S = "-c"$/;"	kind:variable	line:31
-MOREFILES	../exec	/^MOREFILES = "-morefiles"$/;"	kind:variable	line:29
-MOREFILES_S	../exec	/^MOREFILES_S = "-m"$/;"	kind:variable	line:32
+COMPARGS	../exec	/^COMPARGS = "--compargs"$/;"	kind:variable	line:28
+COMPARGS_S	../exec	/^COMPARGS_S = "-c"$/;"	kind:variable	line:33
+LINES_FROM	../exec	/^LINES_FROM = "--from"$/;"	kind:variable	line:30
+LINES_FROM_S	../exec	/^LINES_FROM_S = "-f"$/;"	kind:variable	line:35
+LINES_TO	../exec	/^LINES_TO = "--to"$/;"	kind:variable	line:31
+LINES_TO_S	../exec	/^LINES_TO_S = "-t"$/;"	kind:variable	line:36
+MOREFILES	../exec	/^MOREFILES = "--morefiles"$/;"	kind:variable	line:29
+MOREFILES_S	../exec	/^MOREFILES_S = "-m"$/;"	kind:variable	line:34
 TEST	../exec	/^TEST = False$/;"	kind:variable	line:26
-comp	../exec	/^    def comp():$/;"	kind:function	line:171
 exec	../exec	1;"	kind:file	line:1
-main	../exec	/^def main():$/;"	kind:function	line:43
+main	../exec	/^def main():$/;"	kind:function	line:47
 os	../exec	/^import os$/;"	kind:namespace	line:20
 os	../exec	/^import os.path$/;"	kind:namespace	line:21
 path	../exec	/^import os.path$/;"	kind:namespace	line:21
 platform	../exec	/^import platform$/;"	kind:namespace	line:24
-replace_last	../exec	/^def replace_last(src, rep, rwith):$/;"	kind:function	line:35
-run	../exec	/^    def run():$/;"	kind:function	line:161
+replace_last	../exec	/^def replace_last(src, rep, rwith):$/;"	kind:function	line:39
+run	../exec	/^    def run():$/;"	kind:function	line:182
 shlex	../exec	/^import shlex$/;"	kind:namespace	line:23
 sys	../exec	/^import sys$/;"	kind:namespace	line:22
