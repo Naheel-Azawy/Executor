@@ -25,150 +25,170 @@ import platform
 
 TEST = False
 
-def replace_last(src, rep, rwith):
-	index = src.rfind(rep)
-	return src[:index] + src[index:].replace(rep, rwith)
-
-argstr = ""
-argc = len(sys.argv)
-for a in range(0, argc - 1):
-	argstr += sys.argv[a] + " "
-argstr += "\'" + sys.argv[argc-1] + "\'"
-args = shlex.split(argstr)
-
-if (TEST):
-	print(argstr)
-	i = 0
-	for a in args:
-		print(str(i)+"- " + a)
-		i+=1
-	print("--------------")
-
-COMPARGS  = "-compargs"
-RUNARGS   = "-runargs"
+COMPARGS = "-compargs"
 MOREFILES = "-morefiles"
 
-cmArgs  = ""
-cmFiles = ""
-rnArgs  = ""
-s       = ""
-
-i = 1
-while (i < len(args)):
-	if (args[i].startswith(COMPARGS)):
-		cmArgs += " " + args[i+1]
-		i+=1
-	elif (args[i].startswith(MOREFILES)):
-		cmFiles += " " + args[i+1]
-		i+=1
-	elif (s == "" and os.path.exists(args[i])):
-		s = os.path.abspath(args[i])
-	else:
-		rnArgs += " " + args[i]
-	i+=1
-
-n  = s[s.rfind('/')+1:]
-p  = s[:s.rfind('/')+1]
-e  = s[s.rfind('.'):]
-bp = p + ".execs/"
-t  = bp + "." + replace_last(n, e, e+".tmp")
-inputFiles = "\'" + s + "\'" + cmFiles.replace("$p", p)
-b  = ""
-cm = ""
-rn = ""
-
-if (e == ".java"):
-	c = replace_last(n, e, "")
-	b  = "\'" + bp + c + ".class" + "\'"
-	cm = "javac " + inputFiles + " && " + "mv " + (p + c + "*.class").replace(" ", "\ ") + " \'" + bp + "\'"
-	rn = "cd \"" + bp + "\" && java " + c
-elif (e in (".vala", ".gs")):
-	b  = "\'" + bp + n + ".bin" + "\'"
-	cm = "valac " + inputFiles + " -o " + b
-	rn = b
-elif (e == ".c"):
-	b  = "\'" + bp + n + ".bin" + "\'"
-	cm = "gcc " + inputFiles + " -o " + b
-	rn = b
-elif (e in (".cpp", ".C", ".cc", ".CPP", ".c++", ".cp", ".cxx")):
-	b  = "\'" + bp + n + ".bin" + "\'"
-	cm = "g++ " + inputFiles + " -o " + b
-	rn = b
-elif (e == ".cs"):
-	b  = "\'" + bp + replace_last(n, e, ".exe") + "\'"
-	cm = "mcs " + inputFiles + " -out:" + b
-	rn = "mono " + b
-elif (e == ".vb"):
-	b  = "\'" + bp + replace_last(n, e, ".exe") + "\'"
-	cm = "vbnc " + inputFiles + " 1>/dev/null /out:" + b
-	rn = "mono " + b
-elif (e == ".rs"):
-	b  = "\'" + bp + n + ".bin" + "\'"
-	cm = "rustc " + inputFiles + " -o " + b
-	rn = b
-elif (e == ".go"):
-	b  = "\'" + bp + n + ".bin" + "\'"
-	cm = "gccgo " + inputFiles + " -o " + b
-	rn = b
-elif (e == ".ts"):
-	b  = "\'" + bp + replace_last(n, e, ".js") + "\'"
-	cm = "tsc " + inputFiles + " && mv " + replace_last(s, e, ".js") + " " + bp
-	rn = "node " + b
-elif (e == ".asm"):
-	b  = "\'" + bp + n + ".bin" + "\'"
-	o  = "\'" + bp + n + ".o" + "\'"
-	cm = "nasm " + inputFiles + " -o " + o
-	if (platform.architecture()[0]=="64bit"): cm += " -f elf64"
-	else: cm += " -f elf"
-	cm += " && ld -s -o " + b + " " + o
-	cm += " && rm " + o
-	rn = b
-else:
-	print("Invalid input file: '" + s + "'")
-	if (not TEST): quit()
-
-cm += cmArgs
-rn += rnArgs
-
-if (TEST):
-	print( \
-		"s  = " + s  +"\n"\
-		"n  = " + n  +"\n"\
-		"p  = " + p  +"\n"\
-		"e  = " + e  +"\n"\
-		"bp = " + bp +"\n"\
-		"t  = " + t  +"\n"\
-		"b  = " + b  +"\n"\
-		"cm = " + cm +"\n"\
-		"rn = " + rn +"\n"\
-		"cmFiles = " + cmFiles +"\n"\
-		"--------------\n"\
-	)
-	#quit()
-
-def run():
-	b2 = b[1:len(b)-1]
-	if (os.path.exists(b2) and os.path.getmtime(b2) >= os.path.getmtime(s)):
-		os.system(rn)
-		return True
-	return False
-
-def compile():
-	os.system("mkdir -p \'" + bp + "\'")
-	with open(s, 'r') as fin:
-		data = fin.read().splitlines(True)
-	genTemp = data[0].startswith("#!")
-	if (genTemp):
-		os.rename(s, t)
-		with open(s, 'w') as fout:
-			fout.write("\n")
-			fout.writelines(data[1:])
-	os.system(cm)
-	if (genTemp):
-		os.rename(t, s)
-
-if (not run()):
-	compile()
-	run()
+COMPARGS_S = "-c"
+MOREFILES_S = "-m"
 
 
+def replace_last(src, rep, rwith):
+    """
+    Replace last occurrence
+    """
+    index = src.rfind(rep)
+    return src[:index] + src[index:].replace(rep, rwith)
+
+
+def main():
+    """ Main """
+    argstr = ""
+    argc = len(sys.argv)
+    for a in range(0, argc - 1):
+        argstr += sys.argv[a] + " "
+    argstr += "\'" + sys.argv[argc - 1] + "\'"
+    args = shlex.split(argstr)
+
+    if TEST:
+        print argstr
+        i = 0
+        for a in args:
+            print str(i) + "- " + a
+            i += 1
+        print "--------------"
+
+    cmArgs = ""
+    cmFiles = ""
+    rnArgs = ""
+    s = ""
+
+    i = 1
+    while i < len(args):
+        if args[i].startswith(COMPARGS) or args[i].startswith(COMPARGS_S):
+            cmArgs += " " + args[i + 1]
+            i += 1
+        elif args[i].startswith(MOREFILES) or args[i].startswith(MOREFILES_S):
+            cmFiles += " " + args[i + 1]
+            i += 1
+        elif s == "" and os.path.exists(args[i]):
+            s = os.path.abspath(args[i])
+        else:
+            rnArgs += " " + args[i]
+        i += 1
+
+    n = s[s.rfind('/') + 1:]
+    p = s[:s.rfind('/') + 1]
+    e = s[s.rfind('.'):]
+    bp = p + ".execs/"
+    t = bp + "." + n + ".tmp"
+    inputFiles = "\'" + s + "\'" + cmFiles.replace("$p", p)
+    b = ""
+    cm = ""
+    rn = ""
+
+    if e == ".java":
+        c = replace_last(n, e, "")
+        b = "\'" + bp + c + ".class" + "\'"
+        cm = "javac " + inputFiles + " && " + "mv " + \
+            (p + c + "*.class").replace(" ", "\\ ") + " '" + bp + "'"
+        rn = "cd \"" + bp + "\" && java " + c
+    elif e in (".vala", ".gs"):
+        b = "\'" + bp + n + ".bin" + "\'"
+        cm = "valac " + inputFiles + " -o " + b
+        rn = b
+    elif e == ".c":
+        b = "\'" + bp + n + ".bin" + "\'"
+        cm = "gcc " + inputFiles + " -o " + b
+        rn = b
+    elif e in (".cpp", ".C", ".cc", ".CPP", ".c++", ".cp", ".cxx"):
+        b = "\'" + bp + n + ".bin" + "\'"
+        cm = "g++ " + inputFiles + " -o " + b
+        rn = b
+    elif e == ".cs":
+        b = "\'" + bp + replace_last(n, e, ".exe") + "\'"
+        cm = "mcs " + inputFiles + " -out:" + b
+        rn = "mono " + b
+    elif e == ".vb":
+        b = "\'" + bp + replace_last(n, e, ".exe") + "\'"
+        cm = "vbnc " + inputFiles + " 1>/dev/null /out:" + b
+        rn = "mono " + b
+    elif e == ".rs":
+        b = "\'" + bp + n + ".bin" + "\'"
+        cm = "rustc " + inputFiles + " -o " + b
+        rn = b
+    elif e == ".go":
+        b = "\'" + bp + n + ".bin" + "\'"
+        cm = "gccgo " + inputFiles + " -o " + b
+        rn = b
+    elif e == ".ts":
+        b = "\'" + bp + replace_last(n, e, ".js") + "\'"
+        cm = "tsc " + inputFiles + " && mv " + \
+            replace_last(s, e, ".js") + " " + bp
+        rn = "node " + b
+    elif e == ".asm":
+        b = "\'" + bp + n + ".bin" + "\'"
+        o = "\'" + bp + n + ".o" + "\'"
+        cm = "nasm " + inputFiles + " -o " + o + " -f elf"
+        if platform.architecture()[0] == "64bit":
+            cm += "64"
+        cm += " && ld -s -o " + b + " " + o
+        cm += " && rm " + o
+        rn = b
+    else:
+        print "Invalid input file: '" + s + "'"
+        if not TEST:
+            quit()
+
+    cm += cmArgs
+    rn += rnArgs
+
+    if TEST:
+        print(
+            "s  = " + s + "\n"
+            "n  = " + n + "\n"
+            "p  = " + p + "\n"
+            "e  = " + e + "\n"
+            "bp = " + bp + "\n"
+            "t  = " + t + "\n"
+            "b  = " + b + "\n"
+            "cm = " + cm + "\n"
+            "rn = " + rn + "\n"
+            "cmFiles = " + cmFiles + "\n"
+            "--------------\n"
+        )
+        # quit()
+
+    def run():
+        """
+        Run the bin if it exists and its has a last modified date that is newer than the source
+        """
+        b2 = b[1:len(b) - 1]
+        if os.path.exists(b2) and os.path.getmtime(b2) >= os.path.getmtime(s):
+            os.system(rn)
+            return True
+        return False
+
+    def comp():
+        """
+        Compile the source. If it starts with '#!', remove it and generate a temp file
+        """
+        os.system("mkdir -p \'" + bp + "\'")
+        with open(s, 'r') as fin:
+            data = fin.read().splitlines(True)
+        genTemp = data[0].startswith("#!")
+        if genTemp:
+            os.rename(s, t)
+            with open(s, 'w') as fout:
+                fout.write("\n")
+                fout.writelines(data[1:])
+        os.system(cm)
+        if genTemp:
+            os.rename(t, s)
+
+    if not run():
+        comp()
+        run()
+
+
+if __name__ == "__main__":
+    main()
