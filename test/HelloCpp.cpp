@@ -1,4 +1,4 @@
-#!/bin/exec
+#!/bin/execute
 #include<iostream>
 using namespace std;
 

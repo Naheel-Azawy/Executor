@@ -1,4 +1,4 @@
-#!/bin/exec
+#!/bin/execute
 public class HelloJava {
 
 	public static void main(String[] args) {

@@ -1,4 +1,4 @@
-#!/bin/exec
+#!/bin/execute
 package main
 
 import "fmt"

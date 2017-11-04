@@ -1,4 +1,4 @@
-#!/bin/exec
+#!/bin/execute
 using System;
  
 public class HelloWorld {

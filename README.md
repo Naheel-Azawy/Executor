@@ -25,12 +25,12 @@ $ ./install
 ```
 ### Usage
 ```sh
-$ exec hello.c
+$ execute hello.c
 ```
 Or even better, add a shebang to your file
 test.vala:
 ```c
-#!/bin/exec
+#!/bin/execute
 void main() { print ("Hello!\n"); }
 ```
 ```sh
@@ -43,7 +43,7 @@ $ ./test.ts --from 3 --to 5
 ```
 
 ### Clean up
-Binaries will be generated under '.execs' directory. You can remove it manually if you wish.
+Binaries will be generated under '~/.execs' directory. You can remove it manually if you wish.
 
 ### License
 GPL

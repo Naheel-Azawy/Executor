@@ -1,6 +1,6 @@
 #!/bin/python
 
-# exec
+# execute
 #
 # Copyright (C) 2017 naheel_azawy
 #
@@ -94,7 +94,7 @@ def main():
     n = s[s.rfind('/') + 1:]
     p = s[:s.rfind('/') + 1]
     e = s[s.rfind('.'):]
-    bp = p + ".execs/"
+    bp = os.path.expanduser('~') + "/.execs/" + p + "/"
     t = bp + "." + n + ".tmp"
     inputFiles = "\'" + s + "\'" + cmFiles.replace("$p", p)
     b = ""

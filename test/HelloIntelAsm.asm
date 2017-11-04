@@ -1,4 +1,4 @@
-#!/bin/exec
+#!/bin/execute
 section     .text
 global      _start
 

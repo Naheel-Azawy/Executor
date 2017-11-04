@@ -1,4 +1,4 @@
-#!/bin/exec
+#!/bin/execute
 Imports System
 
 Public Module modmain

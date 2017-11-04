@@ -1,4 +1,4 @@
-#!/bin/exec
+#!/bin/execute
 fn main() {
     println!("Hello Rust world");
 }
