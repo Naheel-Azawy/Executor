@@ -22,8 +22,10 @@ import os.path
 import sys
 import shlex
 import platform
+import re
 
 TEST = False
+SHOW_COMMANDS = False
 
 COMPARGS = "--compargs"
 MOREFILES = "--morefiles"
@@ -71,17 +73,17 @@ def main():
 
     i = 1
     while i < len(args):
-        if args[i].startswith(COMPARGS) or args[i].startswith(COMPARGS_S):
+        if args[i] == COMPARGS or args[i] == COMPARGS_S:
             cmArgs += " " + args[i + 1]
             i += 1
-        elif args[i].startswith(MOREFILES) or args[i].startswith(MOREFILES_S):
+        elif args[i] == MOREFILES or args[i] == MOREFILES_S:
             cmFiles += " " + args[i + 1]
             i += 1
-        elif args[i].startswith(LINES_FROM) or args[i].startswith(LINES_FROM_S):
+        elif args[i] == LINES_FROM or args[i] == LINES_FROM_S:
             fr = int(args[i + 1]) - 1
             frb = True
             i += 1
-        elif args[i].startswith(LINES_TO) or args[i].startswith(LINES_TO_S):
+        elif args[i] == LINES_TO or args[i] == LINES_TO_S:
             to = int(args[i + 1])
             tob = True
             i += 1
@@ -90,6 +92,47 @@ def main():
         else:
             rnArgs += " " + args[i]
         i += 1
+
+    sh = False
+
+    with open(s, 'r') as fin:
+        data = fin.read().splitlines(True)
+
+    argsSearch = re.search("#!.*/execute(.*)", data[0])
+    if argsSearch:
+        argstr = argsSearch.group(1)
+        data[0] = "\n"
+        sh = True
+        args2 = shlex.split(argstr)
+        if args[1:len(args) - 1] != args2:
+            args = args2
+            i = 0
+            while i < len(args):
+                if args[i] == COMPARGS or args[i] == COMPARGS_S:
+                    cmArgs += " " + args[i + 1]
+                    i += 1
+                elif args[i] == MOREFILES or args[i] == MOREFILES_S:
+                    cmFiles += " " + args[i + 1]
+                    i += 1
+                elif args[i] == LINES_FROM or args[i] == LINES_FROM_S:
+                    fr = int(args[i + 1]) - 1
+                    frb = True
+                    i += 1
+                elif args[i] == LINES_TO or args[i] == LINES_TO_S:
+                    to = int(args[i + 1])
+                    tob = True
+                    i += 1
+                else:
+                    rnArgs += " " + args[i]
+                i += 1
+
+            if TEST:
+                print "argstr: " + argstr
+                i = 0
+                for a in args:
+                    print "bang " + str(i) + "- " + a
+                    i += 1
+                print "--------------"
 
     n = s[s.rfind('/') + 1:]
     p = s[:s.rfind('/') + 1]
@@ -191,6 +234,8 @@ def main():
             "b  = " + b + "\n"
             "cm = " + cm + "\n"
             "rn = " + rn + "\n"
+            "cmArgs = " + cmArgs + "\n"
+            "rnArgs = " + rnArgs + "\n"
             "cmFiles = " + cmFiles + "\n"
             "--------------\n"
         )
@@ -202,6 +247,8 @@ def main():
         """
         b2 = b[1:len(b) - 1]
         if os.path.exists(b2) and os.path.getmtime(b2) >= os.path.getmtime(s):
+            if SHOW_COMMANDS:
+                print("> " + rn)
             os.system(rn)
             return True
         return False
@@ -214,19 +261,15 @@ def main():
         Compile the source. If it starts with '#!', remove it and generate a temp file
         """
         os.system("mkdir -p \'" + bp + "\'")
-        with open(s, 'r') as fin:
-            data = fin.read().splitlines(True)
-        sh = data[0].startswith("#!")
         genTemp = sh or frb or tob
         if genTemp:
             os.rename(s, t)
             if not tob:
                 to = len(data)
             with open(s, 'w') as fout:
-                if sh:
-                    data[0] = ""
-                    fout.write("\n")
                 fout.writelines(data[fr:to])
+        if SHOW_COMMANDS:
+            print("> " + cm)
         os.system(cm)
         if genTemp:
             os.rename(t, s)

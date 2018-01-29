@@ -1,0 +1,9 @@
+[Plugin]
+Loader=python3
+Module=execute_gedit
+IAge=3
+Name=Executor
+Description=Run almost everything with a single click!
+Authors=Naheel Azawy <naheelazawy@gmail.com>
+Copyright=Copyright (C) 2017 Naheel Azawy
+Website=https://github.com/Naheel-Azawy/Executor

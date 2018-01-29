@@ -1,0 +1,5 @@
+#!/bin/sh
+sudo cp execute /bin/
+cp execute_gedit.py ~/.local/share/gedit/plugins/
+cp execute_gedit.plugin ~/.local/share/gedit/plugins/
+echo "Done!"

@@ -42,6 +42,16 @@ It's also possible to run a range of lines
 $ ./test.ts --from 3 --to 5
 ```
 
+### Gedit
+Yes! it comes with a gedit plugin!
+
+- Run `./install-gedit`
+- Open gedit preferences -> plugins
+- Enable Executor
+- Enjoy 
+
+![screenshot](./screenshot-gedit.png)
+
 ### Clean up
 Binaries will be generated under '~/.execs' directory. You can remove it manually if you wish.
 
