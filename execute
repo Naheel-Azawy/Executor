@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python
 
 # execute
 #
@@ -157,6 +157,10 @@ def main():
     elif e in (".vala", ".gs"):
         b = "\'" + bp + n + ".bin" + "\'"
         cm = "valac " + inputFiles + " -o " + b
+        rn = b
+    elif e in (".ml"):
+        b = "\'" + bp + n + ".bin" + "\'"
+        cm = "ocamlopt " + inputFiles + " -o " + b
         rn = b
     elif e == ".c":
         b = "\'" + bp + n + ".bin" + "\'"
