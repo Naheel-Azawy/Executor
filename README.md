@@ -18,6 +18,7 @@ Run everything like a script!
 - Python    (python)
 - GNU Octave    (octave)
 - Intel Assembly (nasm)
+- OCaml (ocamlopt)
 
 ### Installation
 ```sh
