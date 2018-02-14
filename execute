@@ -133,6 +133,11 @@ def main():
                     print "bang " + str(i) + "- " + a
                     i += 1
                 print "--------------"
+    else:
+        argsSearch = re.search("#!(.+)", data[0])
+        if argsSearch:
+            os.system(argsSearch.group(1) + " " + s)
+            return
 
     n = s[s.rfind('/') + 1:]
     p = s[:s.rfind('/') + 1]
