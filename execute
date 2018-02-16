@@ -26,7 +26,7 @@ import re
 import shutil
 
 TEST = False
-SHOW_COMMANDS = False
+SHOW_COMMANDS = True
 
 COMPARGS = "--compargs"
 MOREFILES = "--morefiles"
@@ -226,6 +226,9 @@ def main():
         print "Invalid input file: '" + s + "'"
         if not TEST:
             quit()
+
+    cmArgs = cmArgs.replace("$p", p)
+    rnArgs = rnArgs.replace("$p", p)
 
     if cm != "":
         cm += cmArgs
