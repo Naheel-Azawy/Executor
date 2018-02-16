@@ -23,6 +23,7 @@ import sys
 import shlex
 import platform
 import re
+import shutil
 
 TEST = False
 SHOW_COMMANDS = False
@@ -272,7 +273,7 @@ def main():
         os.system("mkdir -p \'" + bp + "\'")
         genTemp = sh or frb or tob
         if genTemp:
-            os.rename(s, t)
+            shutil.move(s, t)
             if not tob:
                 to = len(data)
             with open(s, 'w') as fout:
@@ -281,7 +282,7 @@ def main():
             print("> " + cm)
         os.system(cm)
         if genTemp:
-            os.rename(t, s)
+            shutil.move(t, s)
         run()
 
     if frb or tob:
