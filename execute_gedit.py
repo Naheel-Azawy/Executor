@@ -54,4 +54,6 @@ class ExecutorGeditPlugin(GObject.Object, Gedit.WindowActivatable):
             dialog.destroy()
         else:
             os.system("gnome-terminal -e 'bash -c \"execute " +
-                      f.get_path().replace(" ", "\\ ") + ";bash\"'")
+                      f.get_path().replace(" ", "\\ ") +
+                      ";echo -en \\\"\\nPress ENTER to exit\\\";read A\"'")
+
