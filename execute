@@ -24,9 +24,10 @@ import shlex
 import platform
 import re
 import shutil
+import json
 
 TEST = False
-SHOW_COMMANDS = True
+SHOW_COMMANDS = False
 
 COMPARGS = "--compargs"
 MOREFILES = "--morefiles"
@@ -38,16 +39,133 @@ MOREFILES_S = "-m"
 LINES_FROM_S = "-f"
 LINES_TO_S = "-t"
 
-
-def replace_last(src, rep, rwith):
-    """
-    Replace last occurrence
-    """
-    index = src.rfind(rep)
-    return src[:index] + src[index:].replace(rep, rwith)
-
+LANGUAGES = {
+    ".java": {
+        "outFile": "'{outPath}{fileNameNoExt}.class'",
+        "cm": "javac {inputFiles} && cd '{filePath}' && mv {fileNameNoExt}*.class '{outPath}'",
+        "rn": "java -cp '{outPath}' {fileNameNoExt}"
+    },
+    ".kt": {
+        "outFile": "'{outPath}{fileNameNoExt}.jar'",
+        "cm": "kotlinc {inputFiles} -include-runtime -d {outFile}",
+        "rn": "cd \"{outPath}\" && java -jar {outFile}"
+    },
+    ".vala": {
+        "outFile": "'{outPath}{fileName}.bin'",
+        "cm": "valac {inputFiles} -o {outFile}",
+        "rn": "{outFile}"
+    },
+    ".gs": {
+    	"equal": ".vala"
+    },
+    ".ml": {
+        "outFile": "'{outPath}{fileName}.bin'",
+        "cm": "ocamlopt {inputFiles} -o {outFile} && rm -f '{filePath}{fileNameNoExt}.o' '{filePath}{fileNameNoExt}.cmi' '{filePath}{fileNameNoExt}.cmx'",
+        "rn": "{outFile}"
+    },
+    ".c": {
+        "outFile": "'{outPath}{fileName}.bin'",
+        "cm": "gcc {inputFiles} -o {outFile}",
+        "rn": "{outFile}"
+    },
+    ".cpp": {
+        "outFile": "'{outPath}{fileName}.bin'",
+        "cm": "g++ {inputFiles} -o {outFile}",
+        "rn": "{outFile}"
+    },
+    ".C": {
+    	"equal": ".cpp"
+    },
+    ".cc": {
+    	"equal": ".cpp"
+    },
+    ".CPP": {
+    	"equal": ".cpp"
+    },
+    ".c++": {
+    	"equal": ".cpp"
+    },
+    ".cp": {
+    	"equal": ".cpp"
+    },
+    ".cxx": {
+    	"equal": ".cpp"
+    },
+    ".cs": {
+        "outFile": "'{outPath}{fileNameNoExt}.exe'",
+        "cm": "mcs {inputFiles} -out:{outFile}",
+        "rn": "mono {outFile}"
+    },
+    ".vb": {
+        "outFile": "'{outPath}{fileNameNoExt}.exe'",
+        "cm": "vbnc {inputFiles} 1>/dev/null /out:{outFile}",
+        "rn": "mono {outFile}"
+    },
+    ".rs": {
+        "outFile": "'{outPath}{fileName}.bin'",
+        "cm": "rustc {inputFiles} -o {outFile}",
+        "rn": "{outFile}"
+    },
+    ".go": {
+        "outFile": "'{outPath}{fileName}.bin'",
+        "cm": "gccgo {inputFiles} -o {outFile}",
+        "rn": "{outFile}"
+    },
+    ".ts": {
+        "outFile": "'{outPath}{fileNameNoExt}.js'",
+        "cm": "tsc {inputFiles} && mv '{filePath}{fileNameNoExt}.js' '{outPath}'",
+        "rn": "node {outFile}"
+    },
+    ".asm": {
+        "outFile": "'{outPath}{fileName}.bin'",
+        "cm": "nasm {inputFiles} -o '{outPath}{fileName}.o' -f elf{arch} && ld -s -o {outFile} '{outPath}{fileName}.o' && rm '{outPath}{fileName}.o'",
+        "rn": "{outFile}"
+    },
+    ".py": {
+        "outFile": "'{sourceFile}'",
+        "cm": "",
+        "rn": "python {outFile}"
+    },
+    ".js": {
+        "outFile": "'{sourceFile}'",
+        "cm": "",
+        "rn": "node {outFile}"
+    },
+    ".m": {
+        "outFile": "'{sourceFile}'",
+        "cm": "",
+        "rn": "octave --persist --no-gui --quiet {outFile}"
+    },
+    ".kts": {
+        "outFile": "'{sourceFile}'",
+        "cm": "",
+        "rn": "kotlinc -script {outFile}"
+    },
+    ".sh": {
+        "outFile": "'{sourceFile}'",
+        "cm": "",
+        "rn": "sh {outFile}"
+    },
+    ".pl": {
+        "outFile": "'{outPath}{fileName}'",
+        "cm": "cp {inputFiles} '{outPath}'",
+        "rn": "perl {outFile}"
+    },
+    ".awk": {
+        "outFile": "'{sourceFile}'",
+        "cm": "",
+        "rn": "awk -f {outFile}"
+    }
+}
 
 def main():
+
+    HOME = os.path.expanduser('~')
+    try:
+        LANGUAGES.update(json.load(open(HOME + "/.executor.json")))
+    except Exception:
+        pass
+
     fr = 0
     to = 0
     frb = False
@@ -55,7 +173,7 @@ def main():
     cmArgs = ""
     cmFiles = ""
     rnArgs = ""
-    s = ""
+    sourceFile = ""
 
     argstr = ""
     argc = len(sys.argv)
@@ -78,7 +196,7 @@ def main():
             cmArgs += " " + args[i + 1]
             i += 1
         elif args[i] == MOREFILES or args[i] == MOREFILES_S:
-            cmFiles += " " + args[i + 1]
+            cmFiles += " '" + args[i + 1] + "'"
             i += 1
         elif args[i] == LINES_FROM or args[i] == LINES_FROM_S:
             fr = int(args[i + 1]) - 1
@@ -88,15 +206,15 @@ def main():
             to = int(args[i + 1])
             tob = True
             i += 1
-        elif s == "" and os.path.exists(args[i]):
-            s = os.path.abspath(args[i])
+        elif sourceFile == "" and os.path.exists(args[i]):
+            sourceFile = os.path.abspath(args[i])
         else:
             rnArgs += " " + args[i]
         i += 1
 
     sh = False
 
-    with open(s, 'r') as fin:
+    with open(sourceFile, 'r') as fin:
         data = fin.read().splitlines(True)
 
     argsSearch = re.search("#!.*/execute(.*)", data[0])
@@ -113,7 +231,7 @@ def main():
                     cmArgs += " " + args[i + 1]
                     i += 1
                 elif args[i] == MOREFILES or args[i] == MOREFILES_S:
-                    cmFiles += " " + args[i + 1]
+                    cmFiles += " '" + args[i + 1] + "'"
                     i += 1
                 elif args[i] == LINES_FROM or args[i] == LINES_FROM_S:
                     fr = int(args[i + 1]) - 1
@@ -137,98 +255,43 @@ def main():
     else:
         argsSearch = re.search("#!(.+)", data[0])
         if argsSearch:
-            os.system(argsSearch.group(1) + " " + s)
+            os.system(argsSearch.group(1) + " " + sourceFile)
             return
+    
+    index1 = sourceFile.rfind('/')
+    index2 = sourceFile.rfind('.')
 
-    n = s[s.rfind('/') + 1:]
-    p = s[:s.rfind('/') + 1]
-    e = s[s.rfind('.'):]
-    bp = os.path.expanduser('~') + "/.execs/" + p + "/"
-    t = bp + "." + n + ".tmp"
-    inputFiles = "\'" + s + "\'" + cmFiles.replace("$p", p)
-    b = ""
+    arch = "64" if platform.architecture()[0] == "64bit" else "32"
+    fileName = sourceFile[index1 + 1:]
+    fileNameNoExt = sourceFile[index1 + 1:index2]
+    filePath = sourceFile[:index1 + 1]
+    fileExtension = sourceFile[index2:]
+    outPath = HOME + "/.execs" + filePath
+    tempFile = outPath + "." + fileName + ".tmp"
+    inputFiles = "\'" + sourceFile + "\'" + cmFiles.replace("$p", filePath)
+    outFile = ""
     cm = ""
     rn = ""
 
-    if e == ".java":
-        c = replace_last(n, e, "")
-        b = "\'" + bp + c + ".class" + "\'"
-        cm = "javac " + inputFiles + " && " + "mv " + \
-            (p + c + "*.class").replace(" ", "\\ ") + " '" + bp + "'"
-        rn = "cd \"" + bp + "\" && java " + c
-    elif e == ".kt":
-        b = "\'" + bp + replace_last(n, e, ".jar") + "\'"
-        cm = "kotlinc " + inputFiles + " -include-runtime -d " + b
-        rn = "cd \"" + bp + "\" && java -jar " + b
-    elif e in (".vala", ".gs"):
-        b = "\'" + bp + n + ".bin" + "\'"
-        cm = "valac " + inputFiles + " -o " + b
-        rn = b
-    elif e in (".ml"):
-        b = "\'" + bp + n + ".bin" + "\'"
-        cm = "ocamlopt " + inputFiles + " -o " + b
-        rn = b
-    elif e == ".c":
-        b = "\'" + bp + n + ".bin" + "\'"
-        cm = "gcc " + inputFiles + " -o " + b
-        rn = b
-    elif e in (".cpp", ".C", ".cc", ".CPP", ".c++", ".cp", ".cxx"):
-        b = "\'" + bp + n + ".bin" + "\'"
-        cm = "g++ " + inputFiles + " -o " + b
-        rn = b
-    elif e == ".cs":
-        b = "\'" + bp + replace_last(n, e, ".exe") + "\'"
-        cm = "mcs " + inputFiles + " -out:" + b
-        rn = "mono " + b
-    elif e == ".vb":
-        b = "\'" + bp + replace_last(n, e, ".exe") + "\'"
-        cm = "vbnc " + inputFiles + " 1>/dev/null /out:" + b
-        rn = "mono " + b
-    elif e == ".rs":
-        b = "\'" + bp + n + ".bin" + "\'"
-        cm = "rustc " + inputFiles + " -o " + b
-        rn = b
-    elif e == ".go":
-        b = "\'" + bp + n + ".bin" + "\'"
-        cm = "gccgo " + inputFiles + " -o " + b
-        rn = b
-    elif e == ".ts":
-        b = "\'" + bp + replace_last(n, e, ".js") + "\'"
-        cm = "tsc " + inputFiles + " && mv " + \
-            replace_last(s, e, ".js") + " " + bp
-        rn = "node " + b
-    elif e == ".asm":
-        b = "\'" + bp + n + ".bin" + "\'"
-        o = "\'" + bp + n + ".o" + "\'"
-        cm = "nasm " + inputFiles + " -o " + o + " -f elf"
-        if platform.architecture()[0] == "64bit":
-            cm += "64"
-        cm += " && ld -s -o " + b + " " + o
-        cm += " && rm " + o
-        rn = b
-    elif e == ".py":
-        b = "\'" + s + "\'"
-        cm = ""
-        rn = "python " + b
-    elif e == ".js":
-        b = "\'" + s + "\'"
-        cm = ""
-        rn = "node " + b
-    elif e == ".m":
-        b = "\'" + s + "\'"
-        cm = ""
-        rn = "octave --persist --no-gui --quiet " + b
-    elif e == ".kts":
-        b = "\'" + s + "\'"
-        cm = ""
-        rn = "kotlinc -script " + b
-    else:
-        print "Invalid input file: '" + s + "'"
-        if not TEST:
-            quit()
+    def formatItem(s):
+        return s.format(
+            arch=arch, fileName=fileName, fileNameNoExt=fileNameNoExt, filePath=filePath,
+            fileExtension=fileExtension, outPath=outPath, tempFile=tempFile,
+            inputFiles=inputFiles, outFile=outFile, sourceFile=sourceFile
+        )
 
-    cmArgs = cmArgs.replace("$p", p)
-    rnArgs = rnArgs.replace("$p", p)
+    lang = LANGUAGES[fileExtension]
+    try:
+        equal = lang["equal"]
+        lang = LANGUAGES[equal]
+    except Exception:
+        pass
+    outFile = formatItem(lang["outFile"])
+    cm = formatItem(lang["cm"])
+    rn = formatItem(lang["rn"])
+
+    cmArgs = cmArgs.replace("$p", filePath)
+    rnArgs = rnArgs.replace("$p", filePath)
 
     if cm != "":
         cm += cmArgs
@@ -238,13 +301,13 @@ def main():
         print(
             "fr = " + str(fr) + "\n"
             "to = " + str(to) + "\n"
-            "s  = " + s + "\n"
-            "n  = " + n + "\n"
-            "p  = " + p + "\n"
-            "e  = " + e + "\n"
-            "bp = " + bp + "\n"
-            "t  = " + t + "\n"
-            "b  = " + b + "\n"
+            "sourceFile  = " + sourceFile + "\n"
+            "fileName  = " + fileName + "\n"
+            "filePath  = " + filePath + "\n"
+            "fileExtension  = " + fileExtension + "\n"
+            "outPath = " + outPath + "\n"
+            "tempFile  = " + tempFile + "\n"
+            "outFile  = " + outFile + "\n"
             "cm = " + cm + "\n"
             "rn = " + rn + "\n"
             "cmArgs = " + cmArgs + "\n"
@@ -258,38 +321,38 @@ def main():
         """
         Run the bin if it exists and its has a last modified date that is newer than the source
         """
-        b2 = b[1:len(b) - 1]
-        if os.path.exists(b2) and os.path.getmtime(b2) >= os.path.getmtime(s):
+        b2 = outFile[1:len(outFile) - 1]
+        if os.path.exists(b2) and os.path.getmtime(b2) >= os.path.getmtime(sourceFile):
             if SHOW_COMMANDS:
                 print("> " + rn)
-            os.system(rn)
+            os.system("cd \'" + filePath + "\' && " + rn)
             return True
         return False
 
     if frb or tob:
-        os.system("rm -f " + b)
+        os.system("rm -f " + outFile)
 
     if not run():
         """
         Compile the source. If it starts with '#!', remove it and generate a temp file
         """
-        os.system("mkdir -p \'" + bp + "\'")
+        os.system("mkdir -p \'" + outPath + "\'")
         genTemp = sh or frb or tob
         if genTemp:
-            shutil.move(s, t)
+            shutil.move(sourceFile, tempFile)
             if not tob:
                 to = len(data)
-            with open(s, 'w') as fout:
+            with open(sourceFile, 'w') as fout:
                 fout.writelines(data[fr:to])
         if SHOW_COMMANDS:
             print("> " + cm)
         os.system(cm)
         if genTemp:
-            shutil.move(t, s)
+            shutil.move(tempFile, sourceFile)
         run()
 
     if frb or tob:
-        os.system("rm -f " + b)
+        os.system("rm -f " + outFile)
 
 
 if __name__ == "__main__":

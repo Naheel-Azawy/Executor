@@ -5,7 +5,7 @@ Run everything like a script!
 - C	(gcc)
 - C++	(g++)
 - C#	(mcs and mono)
-- VisualBasic.NET   (vbnc and mono)
+- VisualBasic .NET   (vbnc and mono)
 - Go	(gccgo)
 - Rust	(rustc)
 - Java	(javac)
@@ -19,6 +19,9 @@ Run everything like a script!
 - GNU Octave    (octave)
 - Intel Assembly (nasm)
 - OCaml (ocamlopt)
+- Shell (sh)
+- AWK (awk)
+- Perl (perl)
 
 ### Installation
 ```sh
@@ -29,7 +32,7 @@ $ ./install
 $ execute hello.c
 ```
 Or even better, add a shebang to your file
-test.vala:
+`test.vala`:
 ```c
 #!/bin/execute
 void main() { print ("Hello!\n"); }
@@ -52,6 +55,18 @@ Yes! it comes with a gedit plugin!
 - Enjoy 
 
 ![screenshot](./screenshot-gedit.png)
+
+### Add / Override
+Create `.executor.json` in home directory. Example:
+```json
+{
+    ".js": {
+        "outFile": "'{sourceFile}'",
+        "cm": "",
+        "rn": "gjs {outFile}"
+    }
+}
+```
 
 ### Clean up
 Binaries will be generated under '~/.execs' directory. You can remove it manually if you wish.

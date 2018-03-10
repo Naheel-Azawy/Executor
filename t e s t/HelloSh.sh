@@ -1,0 +1,2 @@
+#!/bin/execute
+cat HelloShTxt
