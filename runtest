@@ -45,3 +45,7 @@ chmod +x ./G\ U\ I/HelloValaGtk.vala
 ./HelloVala.vala
 ./HelloTS2.ts -f 3 -t 5
 ./G\ U\ I/HelloValaGtk.vala 2> /dev/null
+
+execute -r Hello vala 'print (@"$(args[1]) from VALA\n")'
+execute -r Hello c++ 'cout << argv[1] << " from CPP" << endl'
+execute -r "1 1" c 'int i=atoi(argv[1]),j=atoi(argv[2]),k=i+j;printf("%d + %d = %d\n",i,j,k)'

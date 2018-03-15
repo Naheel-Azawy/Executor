@@ -46,6 +46,16 @@ It's also possible to run a range of lines
 $ ./test.ts --from 3 --to 5
 ```
 
+One more cool feature! I leave you with examples:
+```sh
+$ execute -r Hello vala 'print (@"$(args[1]) from VALA\n")'
+Hello from VALA
+$ execute -r Hello c++ 'cout << argv[1] << " from CPP" << endl'
+Hello from CPP
+$ execute -r "1 1" c 'int i=atoi(argv[1]),j=atoi(argv[2]),k=i+j;printf("%d + %d = %d\n",i,j,k)'
+1 + 1 = 2
+```
+
 ### Gedit
 Yes! it comes with a gedit plugin!
 
