@@ -25,6 +25,7 @@ import platform
 import re
 import shutil
 import json
+from distutils.spawn import find_executable
 
 TEST = False
 SHOW_COMMANDS = False
@@ -41,135 +42,14 @@ MOREFILES_S = "-m"
 LINES_FROM_S = "-f"
 LINES_TO_S = "-t"
 
+DIST = platform.linux_distribution()[0].lower()
+if "elementary" in DIST:
+    DIST = "ubuntu"
 HOME = os.path.expanduser('~')
 BASE = HOME + "/.execs"
 
-LANGUAGES = {
-    ".java": {
-        "outFile": "'{outPath}{fileNameNoExt}.class'",
-        "cm": "javac {inputFiles} && cd '{filePath}' && mv {fileNameNoExt}*.class '{outPath}'",
-        "rn": "java -cp '{outPath}' {fileNameNoExt}",
-        "tmp": "public class Tmp {{ public static void main(String[] args) {{ {s}; }} }}"
-    },
-    ".kt": {
-        "outFile": "'{outPath}{fileNameNoExt}.jar'",
-        "cm": "kotlinc {inputFiles} -include-runtime -d {outFile}",
-        "rn": "cd \"{outPath}\" && java -jar {outFile}",
-        "tmp": "fun main(args: Array<String>) {{ {s} }}"
-    },
-    ".vala": {
-        "outFile": "'{outPath}{fileName}.bin'",
-        "cm": "valac {inputFiles} -o {outFile}",
-        "rn": "{outFile}",
-        "tmp": "void main (string[] args) {{ {s}; }}"
-    },
-    ".gs": {
-    	"equal": ".vala"
-    },
-    ".ml": {
-        "outFile": "'{outPath}{fileName}.bin'",
-        "cm": "ocamlopt {inputFiles} -o {outFile} && rm -f '{filePath}{fileNameNoExt}.o' '{filePath}{fileNameNoExt}.cmi' '{filePath}{fileNameNoExt}.cmx'",
-        "rn": "{outFile}"
-    },
-    ".c": {
-        "outFile": "'{outPath}{fileName}.bin'",
-        "cm": "gcc {inputFiles} -o {outFile}",
-        "rn": "{outFile}",
-        "tmp": "#include <stdio.h>\n#include <stdlib.h>\nint main(int argc, char** argv) {{\n {s}; return 0; }}"
-    },
-    ".cpp": {
-        "outFile": "'{outPath}{fileName}.bin'",
-        "cm": "g++ {inputFiles} -o {outFile}",
-        "rn": "{outFile}",
-        "tmp": "#include<iostream>\nusing namespace std;int main(int argc, char* argv[]) {{ {s}; return 0; }}"
-    },
-    ".C": {
-    	"equal": ".cpp"
-    },
-    ".cc": {
-    	"equal": ".cpp"
-    },
-    ".CPP": {
-    	"equal": ".cpp"
-    },
-    ".c++": {
-    	"equal": ".cpp"
-    },
-    ".cp": {
-    	"equal": ".cpp"
-    },
-    ".cxx": {
-    	"equal": ".cpp"
-    },
-    ".cs": {
-        "outFile": "'{outPath}{fileNameNoExt}.exe'",
-        "cm": "mcs {inputFiles} -out:{outFile}",
-        "rn": "mono {outFile}",
-        "tmp": "using System; public class Tmp {{ static public void Main (string[] args) {{ {s}; }} }}"
-    },
-    ".vb": {
-        "outFile": "'{outPath}{fileNameNoExt}.exe'",
-        "cm": "vbnc {inputFiles} 1>/dev/null /out:{outFile}",
-        "rn": "mono {outFile}"
-    },
-    ".rs": {
-        "outFile": "'{outPath}{fileName}.bin'",
-        "cm": "rustc {inputFiles} -o {outFile}",
-        "rn": "{outFile}",
-        "tmp": "fn main() {{ {s}; }}"
-    },
-    ".go": {
-        "outFile": "'{outPath}{fileName}.bin'",
-        "cm": "gccgo {inputFiles} -o {outFile}",
-        "rn": "{outFile}",
-        "tmp": "package main\nimport \"fmt\"\nfunc main() {{ {s} }}"
-    },
-    ".ts": {
-        "outFile": "'{outPath}{fileNameNoExt}.js'",
-        "cm": "tsc {inputFiles} && mv '{filePath}{fileNameNoExt}.js' '{outPath}'",
-        "rn": "node {outFile}"
-    },
-    ".asm": {
-        "outFile": "'{outPath}{fileName}.bin'",
-        "cm": "nasm {inputFiles} -o '{outPath}{fileName}.o' -f elf{arch} && ld -s -o {outFile} '{outPath}{fileName}.o' && rm '{outPath}{fileName}.o'",
-        "rn": "{outFile}"
-    },
-    ".py": {
-        "outFile": "'{sourceFile}'",
-        "cm": "",
-        "rn": "python {outFile}"
-    },
-    ".js": {
-        "outFile": "'{sourceFile}'",
-        "cm": "",
-        "rn": "node {outFile}"
-    },
-    ".m": {
-        "outFile": "'{sourceFile}'",
-        "cm": "",
-        "rn": "octave --persist --no-gui --quiet {outFile}"
-    },
-    ".kts": {
-        "outFile": "'{sourceFile}'",
-        "cm": "",
-        "rn": "kotlinc -script {outFile}"
-    },
-    ".sh": {
-        "outFile": "'{sourceFile}'",
-        "cm": "",
-        "rn": "sh {outFile}"
-    },
-    ".pl": {
-        "outFile": "'{outPath}{fileName}'",
-        "cm": "cp {inputFiles} '{outPath}'",
-        "rn": "perl {outFile}"
-    },
-    ".awk": {
-        "outFile": "'{sourceFile}'",
-        "cm": "",
-        "rn": "awk -f {outFile}"
-    }
-}
+LANGUAGES = \
+{} # from executor.json
 
 def main():
 
@@ -201,6 +81,45 @@ def main():
         except Exception:
             pass
         return lang
+
+    def isInstalled(name):
+        if len(name) == 0: return True
+        return find_executable(name) is not None
+
+    def getInstaller(lang, distro):
+        try:
+            install = lang["install"]
+            try:
+                res = install[distro]
+            except Exception:
+                res = install["default"]
+            return res
+        except Exception:
+            return None
+
+    def installIfNeeded(lang, distro, ext):
+        cm = lang["cm"].split(" ")
+        rn = lang["rn"].split(" ")
+        if len(cm) > 1: cm = cm[0]
+        else: cm = ""
+        if len(rn) > 1: rn = rn[0]
+        else: rn = ""
+        installCm = not isInstalled(cm)
+        installRn = not isInstalled(rn)
+        if installCm or installRn:
+            inst = getInstaller(lang, distro)
+            if inst != None:
+                try:
+                    name = lang["name"]
+                except Exception:
+                    name = ext
+                msg = "Installing " + name + " ("
+                if installCm: msg += cm
+                if installCm and installRn: msg += ", "
+                if installRn: msg += rn
+                msg += ")...\n"
+                print(msg)
+                os.system(inst)
 
     argstr = ""
     argc = len(sys.argv)
@@ -337,6 +256,16 @@ def main():
     cmArgs = cmArgs.replace("$p", filePath)
     rnArgs = rnArgs.replace("$p", filePath)
 
+    try:
+        cm_args = lang["cm_args"]
+        for k in cm_args:
+            for line in data:
+                if re.search(k, line):
+                    cmArgs += " " + cm_args[k]
+                    break
+    except Exception:
+        pass
+
     if cm != "":
         cm += cmArgs
     rn += rnArgs
@@ -360,6 +289,8 @@ def main():
             "--------------\n"
         )
         # quit()
+
+    installIfNeeded(lang, DIST, fileExtension)
 
     def run():
         """

@@ -1,3 +1,2 @@
 #!/bin/sh
-sudo cp execute /bin/
-echo "Done!"
+./executor-json-insert.sh execute > /bin/execute && echo "Done!"

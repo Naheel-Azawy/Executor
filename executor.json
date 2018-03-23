@@ -1,0 +1,240 @@
+{
+    ".java": {
+        "name": "Java",
+        "outFile": "'{outPath}{fileNameNoExt}.class'",
+        "cm": "javac {inputFiles} && cd '{filePath}' && mv {fileNameNoExt}*.class '{outPath}'",
+        "rn": "java -cp '{outPath}' {fileNameNoExt}",
+        "tmp": "public class Tmp {{ public static void main(String[] args) {{ {s}; }} }}",
+        "install": {
+            "fedora": "sudo dnf install -y java-openjdk",
+            "ubuntu": "sudo apt-get install -y openjdk-8-jre openjdk-8-jdk-headless"
+        }
+    },
+    ".kt": {
+        "name": "Kotlin",
+        "outFile": "'{outPath}{fileNameNoExt}.jar'",
+        "cm": "kotlinc {inputFiles} -include-runtime -d {outFile}",
+        "rn": "cd \"{outPath}\" && java -jar {outFile}",
+        "tmp": "fun main(args: Array<String>) {{ {s} }}",
+        "install": {
+            "default": "echo \"$(curl -s https://get.sdkman.io) && source \\\"\\${SDKMAN_DIR}/bin/sdkman-init.sh\\\" && sdk install kotlin\" | bash"
+        }
+    },
+    ".vala": {
+        "name": "Vala",
+        "outFile": "'{outPath}{fileName}.bin'",
+        "cm": "valac {inputFiles} -o {outFile}",
+        "rn": "{outFile}",
+        "tmp": "void main (string[] args) {{ {s}; }}",
+        "install": {
+            "fedora": "sudo dnf install -y vala",
+            "ubuntu": "sudo add-apt-repository ppa:vala-team && sudo apt-get update && sudo apt-get install -y valac"
+        },
+        "cm_args": {
+            "using Gtk|Gtk\\.": "--pkg gtk+-3.0",
+            "File\\.| async ": "--pkg gio-2.0",
+            "using Gee|Gee\\.": "--pkg gee-0.8",
+            "Thread\\.": "--thread"
+        }
+    },
+    ".gs": {
+        "equal": ".vala"
+    },
+    ".ml": {
+        "name": "OCaml",
+        "outFile": "'{outPath}{fileName}.bin'",
+        "cm": "ocamlopt {inputFiles} -o {outFile} && rm -f '{filePath}{fileNameNoExt}.o' '{filePath}{fileNameNoExt}.cmi' '{filePath}{fileNameNoExt}.cmx'",
+        "rn": "{outFile}",
+        "install": {
+            "fedora": "sudo dnf install -y ocaml",
+            "ubuntu": "sudo apt-get install -y ocaml"
+        }
+    },
+    ".c": {
+        "name": "C",
+        "outFile": "'{outPath}{fileName}.bin'",
+        "cm": "gcc {inputFiles} -o {outFile}",
+        "rn": "{outFile}",
+        "tmp": "#include <stdio.h>\n#include <stdlib.h>\nint main(int argc, char** argv) {{\n {s}; return 0; }}",
+        "install": {
+            "fedora": "sudo dnf install -y gcc",
+            "ubuntu": "sudo apt-get install -y build-essential"
+        },
+        "cm_args": {
+            "#include\\s*<math\\.h>": "-lm",
+            "#include\\s*<pthread\\.h>": "-pthread",
+            "#include\\s*<glib\\.h>": "`pkg-config glib-2.0 --cflags --libs`",
+            "#include\\s*<gtk/gtk\\.h>": "`pkg-config gtk+-3.0 --cflags --libs`"
+        }
+    },
+    ".cpp": {
+        "name": "C++",
+        "outFile": "'{outPath}{fileName}.bin'",
+        "cm": "g++ {inputFiles} -o {outFile}",
+        "rn": "{outFile}",
+        "tmp": "#include<iostream>\nusing namespace std;int main(int argc, char* argv[]) {{ {s}; return 0; }}",
+        "install": {
+            "fedora": "sudo dnf install -y gcc-c++",
+            "ubuntu": "sudo apt-get install -y g++"
+        },
+        "cm_args": {
+            "#include\\s*<thread>": "-pthread",
+            "#include\\s*<gtkmm": "`pkg-config gtkmm-3.0 --cflags --libs`"
+        }
+    },
+    ".C": {
+        "equal": ".cpp"
+    },
+    ".cc": {
+        "equal": ".cpp"
+    },
+    ".CPP": {
+        "equal": ".cpp"
+    },
+    ".c++": {
+        "equal": ".cpp"
+    },
+    ".cp": {
+        "equal": ".cpp"
+    },
+    ".cxx": {
+        "equal": ".cpp"
+    },
+    ".cs": {
+        "name": "C#",
+        "outFile": "'{outPath}{fileNameNoExt}.exe'",
+        "cm": "mcs {inputFiles} -out:{outFile}",
+        "rn": "mono {outFile}",
+        "tmp": "using System; public class Tmp {{ static public void Main (string[] args) {{ {s}; }} }}",
+        "install": {
+            "fedora": "sudo dnf install -y mono-devel",
+            "ubuntu": "sudo apt-get install -y mono-complete"
+        },
+        "cm_args": {
+            "using Gtk": "-pkg:gtk-sharp-3.0"
+        }
+    },
+    ".vb": {
+        "name": "VB.Net",
+        "outFile": "'{outPath}{fileNameNoExt}.exe'",
+        "cm": "vbnc {inputFiles} 1>/dev/null /out:{outFile}",
+        "rn": "mono {outFile}",
+        "tmp": "Imports System\nPublic Module modmain\nSub Main()\n{s}\nEnd Sub\nEnd Module",
+        "install": {
+            "fedora": "sudo dnf install -y mono-devel",
+            "ubuntu": "sudo apt-get install -y mono-complete"
+        }
+    },
+    ".rs": {
+        "name": "Rust",
+        "outFile": "'{outPath}{fileName}.bin'",
+        "cm": "rustc {inputFiles} -o {outFile}",
+        "rn": "{outFile}",
+        "tmp": "fn main() {{ {s}; }}",
+        "install": {
+            "default": "curl https://sh.rustup.rs -sSf | sh && bash -c \"if ! grep -q 'source \\$HOME/.cargo/env' \\$HOME/.bashrc; then echo 'source \\$HOME/.cargo/env' >> \\$HOME/.bashrc; fi\""
+        }
+    },
+    ".go": {
+        "name": "Go",
+        "outFile": "'{outPath}{fileName}.bin'",
+        "cm": "gccgo {inputFiles} -o {outFile}",
+        "rn": "{outFile}",
+        "tmp": "package main\nimport \"fmt\"\nfunc main() {{ {s} }}",
+        "install": {
+            "fedora": "sudo dnf install -y gcc-go",
+            "ubuntu": "sudo apt-get install -y golang-go"
+        }
+    },
+    ".ts": {
+        "name": "TypeScript",
+        "outFile": "'{outPath}{fileNameNoExt}.js'",
+        "cm": "tsc {inputFiles} && mv '{filePath}{fileNameNoExt}.js' '{outPath}'",
+        "rn": "node {outFile}",
+        "install": {
+            "fedora": "sudo dnf install -y nodejs npm && sudo npm install -g typescript",
+            "ubuntu": "sudo apt-get install -y nodejs npm && sudo npm install -g typescript"
+        }
+    },
+    ".asm": {
+        "name": "Intel Assembly",
+        "outFile": "'{outPath}{fileName}.bin'",
+        "cm": "nasm {inputFiles} -o '{outPath}{fileName}.o' -f elf{arch} && ld -s -o {outFile} '{outPath}{fileName}.o' && rm '{outPath}{fileName}.o'",
+        "rn": "{outFile}",
+        "install": {
+            "fedora": "sudo dnf install -y nasm",
+            "ubuntu": "sudo apt-get install -y nasm"
+        }
+    },
+    ".s": {
+        "name": "ARM Assembly",
+        "outFile": "'{outPath}{fileName}.bin'",
+        "cm": "arm-linux-gnu-as {inputFiles} -o '{outPath}{fileName}.o' && arm-linux-gnu-ld -s -o {outFile} '{outPath}{fileName}.o'",
+        "rn": "qemu-arm {outFile}",
+        "install": {
+            "fedora": "sudo dnf install -y gcc-arm-linux-gnu qemu-system-arm",
+            "ubuntu": "sudo apt-get install -y gcc-arm-linux-gnueabi qemu-user && sudo ln -s /usr/bin/arm-linux-gnuabi-as /usr/bin/arm-linux-gnu-as && sudo ln -s /usr/bin/arm-linux-gnuabi-ld /usr/bin/arm-linux-gnu-ld"
+        }
+    },
+    ".py": {
+        "name": "Python",
+        "outFile": "'{sourceFile}'",
+        "cm": "",
+        "rn": "python {outFile}",
+        "install": {
+            "fedora": "sudo dnf install -y python",
+            "ubuntu": "sudo apt-get install -y python2.7"
+        }
+    },
+    ".js": {
+        "name": "JavaScript",
+        "outFile": "'{sourceFile}'",
+        "cm": "",
+        "rn": "node {outFile}",
+        "install": {
+            "fedora": "sudo dnf install -y nodejs",
+            "ubuntu": "sudo apt-get install -y nodejs"
+        }
+    },
+    ".m": {
+        "name": "Octave",
+        "outFile": "'{sourceFile}'",
+        "cm": "",
+        "rn": "octave --persist --no-gui --quiet {outFile}",
+        "install": {
+            "fedora": "sudo dnf install -y octave",
+            "ubuntu": "sudo apt-get install -y octave"
+        }
+    },
+    ".kts": {
+        "name": "Kotlin Script",
+        "outFile": "'{sourceFile}'",
+        "cm": "",
+        "rn": "kotlinc -script {outFile}",
+        "install": {
+            "default": "echo \"$(curl -s https://get.sdkman.io) && source \\\"\\${SDKMAN_DIR}/bin/sdkman-init.sh\\\" && sdk install kotlin\" | bash"
+        }
+    },
+    ".sh": {
+        "name": "Shell",
+        "outFile": "'{sourceFile}'",
+        "cm": "",
+        "rn": "sh {outFile}"
+    },
+    ".pl": {
+        "name": "Perl",
+        "outFile": "'{outPath}{fileName}'",
+        "cm": "cp {inputFiles} '{outPath}'",
+        "rn": "perl {outFile}",
+        "install": {
+            "fedora": "sudo dnf install -y perl",
+            "ubuntu": "sudo apt-get install -y perl"
+        }
+    },
+    ".awk": {
+        "name": "AWK",
+        "outFile": "'{sourceFile}'",
+        "cm": "",
+        "rn": "awk -f {outFile}"
+    }
+}

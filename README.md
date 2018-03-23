@@ -25,7 +25,7 @@ Run everything like a script!
 
 ### Installation
 ```sh
-$ ./install
+$ sudo ./install
 ```
 ### Usage
 ```sh
