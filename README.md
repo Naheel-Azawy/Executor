@@ -17,6 +17,7 @@ Run everything like a script!
 - JavaScript    (node)
 - Python    (python)
 - GNU Octave    (octave)
+- ARM Assembly (arm-linux-gnu-as, arm-linux-gnu-ld, and qemu-arm)
 - Intel Assembly (nasm)
 - OCaml (ocamlopt)
 - Shell (sh)
@@ -55,6 +56,18 @@ Hello from CPP
 $ execute -r "1 1" c 'int i=atoi(argv[1]),j=atoi(argv[2]),k=i+j;printf("%d + %d = %d\n",i,j,k)'
 1 + 1 = 2
 ```
+
+### Emacs
+Add this to you `.emacs`:
+```
+(defun execute-program ()
+  (interactive)
+  (defvar cmd)
+  (setq cmd (concat "execute " (buffer-name) ))
+  (shell-command cmd))
+(global-set-key [C-f5] 'execute-program)
+```
+![screenshot](./screenshot-emacs.png)
 
 ### Gedit
 Yes! it comes with a gedit plugin!

@@ -221,11 +221,6 @@ def main():
                     print "bang " + str(i) + "- " + a
                     i += 1
                 print "--------------"
-    else:
-        argsSearch = re.search("#!(.+)", data[0])
-        if argsSearch:
-            os.system(argsSearch.group(1) + " " + sourceFile)
-            return
     
     index1 = sourceFile.rfind('/')
     index2 = sourceFile.rfind('.')
