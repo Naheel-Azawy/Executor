@@ -1,2 +1,2 @@
-#!/bin/sh
-./executor-json-insert.sh execute > /bin/execute && echo "Done!"
+#!/bin/bash
+./executor-json-insert.sh execute > /bin/execute && chmod +x /bin/execute && echo "Done!"
