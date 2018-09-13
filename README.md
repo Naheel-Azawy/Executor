@@ -26,6 +26,12 @@ Run everything like a script!
 
 ### Installation
 ```sh
+$ curl https://raw.githubusercontent.com/Naheel-Azawy/Executor/master/install-online | bash
+```
+or
+```sh
+$ git clone https://github.com/Naheel-Azawy/Executor.git
+$ cd Executor
 $ sudo ./install
 ```
 ### Usage
