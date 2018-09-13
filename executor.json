@@ -180,10 +180,10 @@
         "name": "Python",
         "outFile": "'{sourceFile}'",
         "cm": "",
-        "rn": "python {outFile}",
+        "rn": "python3 {outFile}",
         "install": {
-            "fedora": "sudo dnf install -y python",
-            "ubuntu": "sudo apt-get install -y python2.7"
+            "fedora": "sudo dnf install -y python3",
+            "ubuntu": "sudo apt-get install -y python3"
         }
     },
     ".js": {

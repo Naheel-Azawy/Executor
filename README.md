@@ -15,14 +15,18 @@ Run everything like a script!
 - Genie	(valac)
 - TypeScript	(tsc and node)
 - JavaScript    (node)
-- Python    (python)
+- Python    (python3)
 - GNU Octave    (octave)
 - ARM Assembly (arm-linux-gnu-as, arm-linux-gnu-ld, and qemu-arm)
 - Intel Assembly (nasm)
 - OCaml (ocamlopt)
-- Shell (sh)
+- Shell (bash)
 - AWK (awk)
 - Perl (perl)
+- R (R)
+- Dart (dart)
+- Julia (julia)
+- Haxe (haxe and python3)
 
 ### Installation
 ```sh
