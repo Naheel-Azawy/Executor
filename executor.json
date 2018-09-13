@@ -219,7 +219,7 @@
         "name": "Shell",
         "outFile": "'{sourceFile}'",
         "cm": "",
-        "rn": "sh {outFile}"
+        "rn": "bash {outFile}"
     },
     ".pl": {
         "name": "Perl",
@@ -236,5 +236,29 @@
         "outFile": "'{sourceFile}'",
         "cm": "",
         "rn": "awk -f {outFile}"
+    },
+    ".r": {
+        "name": "R",
+        "outFile": "'{sourceFile}'",
+        "cm": "",
+        "rn": "R -f {outFile}"
+    },
+    ".dart": {
+        "name": "Dart",
+        "outFile": "'{sourceFile}'",
+        "cm": "",
+        "rn": "dart {outFile}"
+    },
+    ".jl": {
+        "name": "Julia",
+	      "outFile": "'{sourceFile}'",
+        "cm": "",
+        "rn": "julia {outFile}"
+    },
+    ".hx": {
+        "name": "Haxe",
+	      "outFile": "'{outPath}{fileNameNoExt}.py'",
+        "cm": "cd '{filePath}' && haxe -main {fileNameNoExt} -python {outFile} -dce full",
+        "rn": "python3 {outFile}"
     }
 }
