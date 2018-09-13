@@ -22,6 +22,7 @@ import os.path
 import sys
 import shlex
 import platform
+import distro
 import re
 import shutil
 import json
@@ -42,7 +43,7 @@ MOREFILES_S = "-m"
 LINES_FROM_S = "-f"
 LINES_TO_S = "-t"
 
-DIST = platform.linux_distribution()[0].lower()
+DIST = distro.linux_distribution(full_distribution_name=False)[0].lower()
 if "elementary" in DIST:
     DIST = "ubuntu"
 HOME = os.path.expanduser('~')
@@ -73,7 +74,7 @@ def main():
         try:
             lang = LANGUAGES[fileExtension]
         except Exception:
-            print "Invalid input file: '" + sourceFile + "'"
+            print("Invalid input file: '" + sourceFile + "'")
             quit()
         try:
             equal = lang["equal"]
@@ -129,12 +130,12 @@ def main():
     args = shlex.split(argstr)
 
     if TEST:
-        print argstr
+        print(argstr)
         i = 0
         for a in args:
-            print str(i) + "- " + a
+            print(str(i) + "- " + a)
             i += 1
-        print "--------------"
+        print("--------------")
 
     i = 1
     while i < len(args):
@@ -215,12 +216,12 @@ def main():
                 i += 1
 
             if TEST:
-                print "argstr: " + argstr
+                print("argstr: " + argstr)
                 i = 0
                 for a in args:
-                    print "bang " + str(i) + "- " + a
+                    print("bang " + str(i) + "- " + a)
                     i += 1
-                print "--------------"
+                print("--------------")
     
     index1 = sourceFile.rfind('/')
     index2 = sourceFile.rfind('.')

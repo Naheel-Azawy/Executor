@@ -1,0 +1,8 @@
+#!/bin/bash
+rm -rf /tmp/Executor
+git clone https://github.com/Naheel-Azawy/Executor /tmp/Executor
+cd /tmp/Executor
+
+./install-gedit
+echo Enter you password to install on /bin/execute
+sudo ./install
