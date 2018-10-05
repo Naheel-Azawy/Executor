@@ -1,2 +1,2 @@
-#!/bin/execute
+#!/usr/bin/env execute
 cat HelloShTxt

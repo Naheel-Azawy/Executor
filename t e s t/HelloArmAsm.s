@@ -1,4 +1,4 @@
-#!/bin/execute
+#!/usr/bin/env execute
 .data
 msg:
     .ascii      "Hello ARM Assembly world\n"

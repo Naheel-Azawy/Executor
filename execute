@@ -182,7 +182,7 @@ def main():
     with open(sourceFile, 'r') as fin:
         data = fin.read().splitlines(True)
 
-    argsSearch = re.search("#!.*/execute(.*)", data[0])
+    argsSearch = re.search("#!.*execute(.*)", data[0])
     if argsSearch:
         argstr = argsSearch.group(1)
         data[0] = "\n"

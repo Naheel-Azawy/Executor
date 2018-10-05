@@ -1,4 +1,4 @@
-#!/bin/execute
+#!/usr/bin/env execute
 Imports System
 
 Public Module modmain

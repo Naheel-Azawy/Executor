@@ -1,5 +1,5 @@
 #!/bin/sh
-sudo rm -f /bin/execute
+sudo rm -f $(which execute)
 rm -f ~/.local/share/gedit/plugins/execute_gedit.py
 rm -f ~/.local/share/gedit/plugins/execute_gedit.plugin
 echo "Removed :("

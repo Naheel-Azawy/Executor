@@ -279,7 +279,7 @@
         "name": "R",
         "outFile": "'{sourceFile}'",
         "cm": "",
-        "rn": "R --quiet -f {outFile}",
+        "rn": "R --slave -f {outFile}",
         "needs": [ "R" ],
         "install": {
             "arch": "sudo pacman -S r"

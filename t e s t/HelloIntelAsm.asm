@@ -1,4 +1,4 @@
-#!/bin/execute
+#!/usr/bin/env execute
 section     .text
 global      _start
 

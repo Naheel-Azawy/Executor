@@ -1,4 +1,4 @@
-#!/bin/execute
+#!/usr/bin/env execute
 using System;
  
 public class HelloWorld {

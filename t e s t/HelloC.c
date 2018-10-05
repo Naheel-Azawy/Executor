@@ -1,4 +1,4 @@
-#!/bin/execute
+#!/usr/bin/env execute
 #include <stdio.h>
 
 int main(int argc, char** argv) {

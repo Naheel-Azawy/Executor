@@ -1,4 +1,4 @@
-#!/bin/execute
+#!/usr/bin/env execute
 package main
 
 import "fmt"

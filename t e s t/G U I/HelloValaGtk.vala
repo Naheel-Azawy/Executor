@@ -1,4 +1,4 @@
-#!/bin/execute -c "--pkg gtk+-3.0"
+#!/usr/bin/env execute
 using Gtk;
 
 int main (string[] args) {

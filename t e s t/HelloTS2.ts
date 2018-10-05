@@ -1,4 +1,4 @@
-#!/bin/execute
+#!/usr/bin/env execute
 console.log("Hello world 1");
 console.log("Hello world 2");
 console.log("Hello world 3");
