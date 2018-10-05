@@ -1,28 +1,7 @@
 #!/bin/sh
 cd "t e s t"
-chmod +x HelloIntelAsm.asm
-chmod +x HelloArmAsm.s
-chmod +x HelloC.c
-chmod +x HelloCpp.cpp
-chmod +x HelloCS.cs
-chmod +x HelloVBNet.vb
-chmod +x HelloGo.go
-chmod +x HelloRust.rs
-chmod +x HelloJava.java
-chmod +x HelloKotlin.kt
-chmod +x HelloKotlinScript.kts
-chmod +x HelloTS.ts
-chmod +x HelloJS.js
-chmod +x HelloPy.py
-chmod +x HelloSh.sh
-chmod +x HelloOCaml.ml
-chmod +x HelloAWK.awk
-chmod +x HelloPerl.pl
-chmod +x HelloOctave.m
-chmod +x HelloGenie.gs
-chmod +x HelloVala.vala
-chmod +x HelloTS2.ts
-chmod +x ./G\ U\ I/HelloValaGtk.vala
+chmod +x ./*
+chmod +x ./G\ U\ I/*
 
 ./HelloIntelAsm.asm
 ./HelloArmAsm.s
@@ -42,6 +21,10 @@ chmod +x ./G\ U\ I/HelloValaGtk.vala
 ./HelloOCaml.ml
 ./HelloAWK.awk
 ./HelloPerl.pl
+./HelloR.r
+./HelloDart.dart
+./HelloJulia.jl
+./HelloHaxe.hx
 ./HelloOctave.m 2> /dev/null
 ./HelloGenie.gs
 ./HelloVala.vala

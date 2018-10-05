@@ -22,7 +22,6 @@ import os.path
 import sys
 import shlex
 import platform
-import distro
 import re
 import shutil
 import json
@@ -43,9 +42,14 @@ MOREFILES_S = "-m"
 LINES_FROM_S = "-f"
 LINES_TO_S = "-t"
 
-DIST = distro.linux_distribution(full_distribution_name=False)[0].lower()
-if "elementary" in DIST:
-    DIST = "ubuntu"
+try:
+    import distro
+    DIST = distro.linux_distribution(full_distribution_name=False)[0].lower()
+    if "elementary" in DIST:
+        DIST = "ubuntu"
+except:
+    DIST = ""
+
 HOME = os.path.expanduser('~')
 BASE = HOME + "/.execs"
 
@@ -99,27 +103,21 @@ def main():
             return None
 
     def installIfNeeded(lang, distro, ext):
-        cm = lang["cm"].split(" ")
-        rn = lang["rn"].split(" ")
-        if len(cm) > 1: cm = cm[0]
-        else: cm = ""
-        if len(rn) > 1: rn = rn[0]
-        else: rn = ""
-        installCm = not isInstalled(cm)
-        installRn = not isInstalled(rn)
-        if installCm or installRn:
+        needsInstall = False
+        needed = lang["needs"]
+        if needed != None:
+            for i in needed:
+                if not isInstalled(i):
+                    needsInstall = True
+                    break
+        if needsInstall:
             inst = getInstaller(lang, distro)
             if inst != None:
                 try:
                     name = lang["name"]
                 except Exception:
                     name = ext
-                msg = "Installing " + name + " ("
-                if installCm: msg += cm
-                if installCm and installRn: msg += ", "
-                if installRn: msg += rn
-                msg += ")...\n"
-                print(msg)
+                print("Installing " + str(needed) +  "...\n")
                 os.system(inst)
 
     argstr = ""
@@ -222,7 +220,7 @@ def main():
                     print("bang " + str(i) + "- " + a)
                     i += 1
                 print("--------------")
-    
+
     index1 = sourceFile.rfind('/')
     index2 = sourceFile.rfind('.')
 
