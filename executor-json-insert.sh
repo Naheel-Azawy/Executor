@@ -1,2 +1,2 @@
 #!/bin/sh
-sed -e '/{} # from executor.json/ {' -e 'r executor.json' -e 'd' -e '}' $1
+sed -e '/{} # from executor.json/ {' -e 'r executor.json' -e 'd' -e '}' "$1"

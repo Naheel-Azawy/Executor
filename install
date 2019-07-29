@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 O='/bin/execute'
 touch "$O" || O='/usr/local/bin/execute'
 ./executor-json-insert.sh execute > "$O" && chmod +x "$O" && echo "Done!"
