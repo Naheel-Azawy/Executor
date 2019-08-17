@@ -8,7 +8,7 @@ chmod +x ./G\ U\ I/*
 ./HelloC.c
 ./HelloCpp.cpp
 ./HelloCS.cs
-./HelloVBNet.vb
+#./HelloVBNet.vb # who uses such things now...
 ./HelloGo.go
 ./HelloRust.rs
 ./HelloJava.java
@@ -29,11 +29,25 @@ chmod +x ./G\ U\ I/*
 ./HelloGenie.gs
 ./HelloVala.vala
 ./HelloTS2.ts -f 3 -t 5
-./G\ U\ I/HelloValaGtk.vala 2> /dev/null
+if [ "$1" != -nw ]; then
+    ./G\ U\ I/HelloValaGtk.vala 2> /dev/null
+fi
 
-execute -r Hello vala 'print (@"$(args[1]) from VALA\n")'
-execute -r Hello c++ 'cout << argv[1] << " from CPP" << endl'
-execute -r "1 1" c 'int i=atoi(argv[1]),j=atoi(argv[2]),k=i+j;printf("%d + %d = %d\n",i,j,k)'
-execute vala 'Gtk.init(ref args);var w=new Gtk.Window();w.title="Ello";w.set_default_size(300,150);w.border_width=10;w.destroy.connect(Gtk.main_quit);var b=new Gtk.Button();b.label="CLICK ME!";b.clicked.connect(()=>{print("clicked\n");Gtk.main_quit();});w.add(b);w.show_all();Gtk.main()'
+execute -r Hello vala 'print (@"$(args[1]) from VALA inline\n")'
+execute -r Hello c++  'cout << argv[1] << " from CPP inline" << endl'
+execute -r "1 1" c    'int i=atoi(argv[1]),j=atoi(argv[2]),k=i+j;printf("%d + %d = %d from C inline\n",i,j,k)'
 
-
+if [ "$1" != -nw ]; then
+    execute vala 'Gtk.init(ref args);
+var w=new Gtk.Window();
+w.title="Ello";
+w.set_default_size(300,150);
+w.border_width=10;
+w.destroy.connect(Gtk.main_quit);
+var b=new Gtk.Button();
+b.label="CLICK ME!";
+b.clicked.connect(()=>{print("clicked\n");Gtk.main_quit();});
+w.add(b);
+w.show_all();
+Gtk.main()'
+fi

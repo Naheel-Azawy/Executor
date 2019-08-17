@@ -35,6 +35,8 @@ RUNARGS = "--runargs"
 MOREFILES = "--morefiles"
 LINES_FROM = "--from"
 LINES_TO = "--to"
+INSTALL_ALL = "--install-all"
+SET_DIST = "--dist"
 
 COMPARGS_S = "-c"
 RUNARGS_S = "-r"
@@ -42,25 +44,30 @@ MOREFILES_S = "-m"
 LINES_FROM_S = "-f"
 LINES_TO_S = "-t"
 
-try:
-    import distro
-    DIST = distro.linux_distribution(full_distribution_name=False)[0].lower()
-    if "elementary" in DIST:
-        DIST = "ubuntu"
-except:
-    DIST = ""
-
 HOME = os.path.expanduser('~')
-BASE = HOME + "/.execs"
+BASE = HOME + "/.cache/execs"
 
 LANGUAGES = \
 {} # from executor.json
 
 def main():
 
+    if not os.path.exists(BASE):
+        os.makedirs(BASE)
+
     try:
         LANGUAGES.update(json.load(open(HOME + "/.executor.json")))
     except Exception:
+        pass
+
+
+    dist = ""
+    try:
+        import distro
+        dist = distro.linux_distribution(full_distribution_name=False)[0].lower()
+        if "elementary" in dist:
+            dist = "ubuntu"
+    except:
         pass
 
     fr = 0
@@ -137,7 +144,18 @@ def main():
 
     i = 1
     while i < len(args):
-        if args[i] == COMPARGS or args[i] == COMPARGS_S:
+        if args[i] == INSTALL_ALL:
+            for l in LANGUAGES:
+                if "install" in LANGUAGES[l]:
+                    inst = LANGUAGES[l]["install"]
+                    if dist in inst:
+                        print('>>> ' + inst[dist])
+                        os.system(inst[dist])
+            exit()
+        elif args[i] == SET_DIST:
+            dist = args[i + 1]
+            i += 1
+        elif args[i] == COMPARGS or args[i] == COMPARGS_S:
             cmArgs += " " + args[i + 1]
             i += 1
         elif args[i] == RUNARGS or args[i] == RUNARGS_S:
@@ -284,7 +302,7 @@ def main():
         )
         # quit()
 
-    installIfNeeded(lang, DIST, fileExtension)
+    installIfNeeded(lang, dist, fileExtension)
 
     def run():
         """

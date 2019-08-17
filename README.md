@@ -38,26 +38,41 @@ $ git clone https://github.com/Naheel-Azawy/Executor.git
 $ cd Executor
 $ sudo ./install
 ```
+
+### Docker
+The docker image is based on archlinux/base. The image should be around 5.76GB, so the build takes time...
+
+```sh
+docker build -t executor .
+docker run -it executor
+```
+
 ### Usage
+
 ```sh
 $ execute hello.c
 ```
-Or even better, add a shebang to your file
-`test.vala`:
+
+Or even better, add a shebang to your file `test.vala`:
+
 ```c
 #!/bin/execute
 void main() { print ("Hello!\n"); }
 ```
+
 ```sh
 $ chmod +x test.vala
 $ ./test.vala
 ```
+
 It's also possible to run a range of lines
+
 ```sh
 $ ./test.ts --from 3 --to 5
 ```
 
 One more cool feature! I leave you with examples:
+
 ```sh
 $ execute -r Hello vala 'print (@"$(args[1]) from VALA\n")'
 Hello from VALA
@@ -69,6 +84,7 @@ $ execute -r "1 1" c 'int i=atoi(argv[1]),j=atoi(argv[2]),k=i+j;printf("%d + %d 
 
 ### Emacs
 Add this to you `.emacs`:
+
 ```
 (defun execute-program ()
   (interactive)
@@ -77,6 +93,7 @@ Add this to you `.emacs`:
   (shell-command cmd))
 (global-set-key [C-f5] 'execute-program)
 ```
+
 ![screenshot](./screenshot-emacs.png)
 
 ### Gedit
@@ -91,6 +108,7 @@ Yes! it comes with a gedit plugin!
 
 ### Add / Override
 Create `.executor.json` in home directory. Example:
+
 ```json
 {
     ".js": {
@@ -102,7 +120,7 @@ Create `.executor.json` in home directory. Example:
 ```
 
 ### Clean up
-Binaries will be generated under '~/.execs' directory. You can remove it manually if you wish.
+Binaries will be generated under '~/.cache/execs' directory.
 
 ### License
 GPL
