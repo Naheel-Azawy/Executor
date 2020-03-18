@@ -1,5 +1,6 @@
 {
     ".java": {
+        "ext": "java",
         "name": "Java",
         "outFile": "'{outPath}{fileNameNoExt}.class'",
         "cm": "javac {inputFiles} && cd '{filePath}' && mv {fileNameNoExt}*.class '{outPath}'",
@@ -14,6 +15,7 @@
     },
 
     ".kt": {
+        "ext": "kt",
         "name": "Kotlin",
         "outFile": "'{outPath}{fileNameNoExt}.jar'",
         "cm": "kotlinc {inputFiles} -include-runtime -d {outFile}",
@@ -27,6 +29,7 @@
     },
 
     ".kts": {
+        "ext": "kts",
         "name": "Kotlin Script",
         "outFile": "'{sourceFile}'",
         "cm": "",
@@ -39,6 +42,7 @@
     },
 
     ".vala": {
+        "ext": "vala",
         "name": "Vala",
         "outFile": "'{outPath}{fileName}.bin'",
         "cm": "valac {inputFiles} -o {outFile}",
@@ -60,10 +64,12 @@
     },
 
     ".gs": {
+        "ext": "gs",
         "equal": ".vala"
     },
 
     ".ml": {
+        "ext": "ml",
         "name": "OCaml",
         "outFile": "'{outPath}{fileName}.bin'",
         "cm": "ocamlopt {inputFiles} -o {outFile} && rm -f '{filePath}{fileNameNoExt}.o' '{filePath}{fileNameNoExt}.cmi' '{filePath}{fileNameNoExt}.cmx'",
@@ -77,6 +83,7 @@
     },
 
     ".c": {
+        "ext": "c",
         "name": "C",
         "outFile": "'{outPath}{fileName}.bin'",
         "cm": "gcc {inputFiles} -o {outFile}",
@@ -98,6 +105,7 @@
     },
 
     ".cpp": {
+        "ext": "cpp",
         "name": "C++",
         "outFile": "'{outPath}{fileName}.bin'",
         "cm": "g++ {inputFiles} -o {outFile}",
@@ -116,30 +124,37 @@
     },
 
     ".C": {
+        "ext": "C",
         "equal": ".cpp"
     },
 
     ".cc": {
+        "ext": "cc",
         "equal": ".cpp"
     },
 
     ".CPP": {
+        "ext": "CPP",
         "equal": ".cpp"
     },
 
     ".c++": {
+        "ext": "c++",
         "equal": ".cpp"
     },
 
     ".cp": {
+        "ext": "cp",
         "equal": ".cpp"
     },
 
     ".cxx": {
+        "ext": "cxx",
         "equal": ".cpp"
     },
 
     ".cs": {
+        "ext": "cs",
         "name": "C#",
         "outFile": "'{outPath}{fileNameNoExt}.exe'",
         "cm": "mcs {inputFiles} -out:{outFile}",
@@ -157,6 +172,7 @@
     },
 
     ".vb": {
+        "ext": "vb",
         "name": "VB.Net",
         "outFile": "'{outPath}{fileNameNoExt}.exe'",
         "cm": "vbnc {inputFiles} 1>/dev/null /out:{outFile}",
@@ -170,6 +186,7 @@
     },
 
     ".rs": {
+        "ext": "rs",
         "name": "Rust",
         "outFile": "'{outPath}{fileName}.bin'",
         "cm": "rustc {inputFiles} -o {outFile}",
@@ -183,6 +200,7 @@
     },
 
     ".go": {
+        "ext": "go",
         "name": "Go",
         "outFile": "'{outPath}{fileName}.bin'",
         "cm": "go build -o {outFile} {inputFiles}",
@@ -197,6 +215,7 @@
     },
 
     ".js": {
+        "ext": "js",
         "name": "JavaScript",
         "outFile": "'{sourceFile}'",
         "cm": "",
@@ -210,6 +229,7 @@
     },
 
     ".ts": {
+        "ext": "ts",
         "name": "TypeScript",
         "outFile": "'{outPath}{fileNameNoExt}.js'",
         "cm": "tsc {inputFiles} && mv '{filePath}{fileNameNoExt}.js' '{outPath}'",
@@ -223,6 +243,7 @@
     },
 
     ".asm": {
+        "ext": "asm",
         "name": "Intel Assembly",
         "outFile": "'{outPath}{fileName}.bin'",
         "cm": "nasm {inputFiles} -o '{outPath}{fileName}.o' -f elf{arch} && ld -s -o {outFile} '{outPath}{fileName}.o' && rm '{outPath}{fileName}.o'",
@@ -236,6 +257,7 @@
     },
 
     ".s": {
+        "ext": "s",
         "name": "ARM Assembly",
         "outFile": "'{outPath}{fileName}.bin'",
         "cm": "arm-linux-gnu-as {inputFiles} -o '{outPath}{fileName}.o' && arm-linux-gnu-ld -s -o {outFile} '{outPath}{fileName}.o'",
@@ -249,6 +271,7 @@
     },
 
     ".py": {
+        "ext": "py",
         "name": "Python",
         "outFile": "'{sourceFile}'",
         "cm": "",
@@ -262,6 +285,7 @@
     },
 
     ".m": {
+        "ext": "m",
         "name": "Octave",
         "outFile": "'{sourceFile}'",
         "cm": "",
@@ -275,6 +299,7 @@
     },
 
     ".sh": {
+        "ext": "sh",
         "name": "Shell",
         "outFile": "'{sourceFile}'",
         "cm": "",
@@ -283,6 +308,7 @@
     },
 
     ".pl": {
+        "ext": "pl",
         "name": "Perl",
         "outFile": "'{outPath}{fileName}'",
         "cm": "cp {inputFiles} '{outPath}'",
@@ -296,6 +322,7 @@
     },
 
     ".awk": {
+        "ext": "awk",
         "name": "AWK",
         "outFile": "'{sourceFile}'",
         "cm": "",
@@ -304,6 +331,7 @@
     },
 
     ".r": {
+        "ext": "r",
         "name": "R",
         "outFile": "'{sourceFile}'",
         "cm": "",
@@ -315,6 +343,7 @@
     },
 
     ".dart": {
+        "ext": "dart",
         "name": "Dart",
         "outFile": "'{sourceFile}'",
         "cm": "",
@@ -326,6 +355,7 @@
     },
 
     ".jl": {
+        "ext": "jl",
         "name": "Julia",
 	      "outFile": "'{sourceFile}'",
         "cm": "",
@@ -337,6 +367,7 @@
     },
 
     ".hx": {
+        "ext": "hx",
         "name": "Haxe",
 	      "outFile": "'{outPath}{fileNameNoExt}.py'",
         "cm": "cd '{filePath}' && haxe -main {fileNameNoExt} -python {outFile} -dce full",
@@ -345,5 +376,16 @@
         "install": {
             "arch": "sudo pacman --noconfirm --needed -S haxe python3"
         }
+    },
+
+    ".v": {
+        "ext": "v",
+        "name": "V",
+        "outFile": "'{outPath}{fileName}.bin'",
+        "cm": "v -o {outFile} {inputFiles}",
+        "rn": "{outFile}",
+        "tmp": "{s}",
+        "needs": [ "v" ],
+        "install": {}
     }
 }
